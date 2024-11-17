@@ -59,7 +59,7 @@ jib {
 		image = "orbit/api"
 		tags = ["latest"]
 		auth {
-			username = 'orbit1234'
+			username = 'orbit123'
 			password = System.getenv('DOCKERHUB_PASSWORD') ?: ''
 		}
 	}
