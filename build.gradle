@@ -53,7 +53,7 @@ spotless {
 
 jib {
 	from {
-		image = "openjdk:21-alpine"
+		image = "openjdk:21-jdk"
 	}
 	to {
 		image = "orbit/api"
