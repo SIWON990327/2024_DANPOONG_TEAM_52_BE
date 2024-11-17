@@ -56,7 +56,7 @@ jib {
 		image = "openjdk:21-jdk"
 	}
 	to {
-		image = "orbit/api"
+		image = "orbit123/api"
 		tags = ["latest"]
 		auth {
 			username = 'orbit123'

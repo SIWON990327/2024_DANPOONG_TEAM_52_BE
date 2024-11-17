@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "orbit/api:latest",
+    "Name": "orbit123/api:latest",
     "Update": "true"
   },
   "Ports": [
