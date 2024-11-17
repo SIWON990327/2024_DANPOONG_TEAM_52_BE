@@ -43,3 +43,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.bootRun {
+	args = ["--spring.profiles.active=local", "--spring.docker.compose.file=compose.yml"]
+}
+
