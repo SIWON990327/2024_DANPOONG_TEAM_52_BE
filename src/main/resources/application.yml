@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: orbit
+  datasource:
+    url: "jdbc:mysql://${DATABASE_ADDRESS:localhost}:3306/orbit?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&maxReconnects=10"
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
