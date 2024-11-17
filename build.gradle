@@ -24,19 +24,75 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('springCloudVersion', "2023.0.0")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+spotless {
+	java {
+		// Google Java 포맷 적용
+		googleJavaFormat()
+		// 아래 순서로 import문 정렬
+		importOrder('java', 'javax', 'jakarta', 'org', 'com')
+		// 사용하지 않는 import 제거
+		removeUnusedImports()
+		// 각 라인 끝에 있는 공백을 제거
+		trimTrailingWhitespace()
+		// 파일 끝에 새로운 라인 추가
+		endWithNewline()
+	}
+}
+
+jib {
+	from {
+		image = "openjdk:17-alpine"
+	}
+	to {
+		image = "orbit/api"
+		tags = ["latest"]
+		auth {
+			username = 'orbit1234'
+			password = System.getenv('DOCKERHUB_PASSWORD') ?: ''
+		}
+	}
+	container {
+		jvmFlags = ["-Xms128m", "-Xmx128m", "-Dspring.profiles.active=dev", "-Dfile.encoding=UTF-8"]
+		ports = ["8080"]
+		allowInsecureRegistries = true
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.+'
+
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
+
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
 	compileOnly 'org.projectlombok:lombok'
+
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
 	annotationProcessor 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 	testImplementation 'org.springframework.security:spring-security-test'
+
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -44,7 +100,19 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.bootRun {
-	args = ["--spring.profiles.active=local", "--spring.docker.compose.file=compose.yml"]
+tasks.named('test') {
+	useJUnitPlatform()
 }
 
+tasks.named('compileJava') {
+	dependsOn 'spotlessApply'
+	dependsOn 'addGitHooks'
+}
+
+tasks.register('addGitHooks', Copy) {
+	from './script/pre-commit'
+	into './.git/hooks'
+	filePermissions {
+		unix('r-xr-xr-x')
+	}
+}
