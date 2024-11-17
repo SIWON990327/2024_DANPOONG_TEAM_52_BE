@@ -3,6 +3,8 @@ plugins {
 	id 'org.springframework.boot' version '3.3.5'
 	id 'io.spring.dependency-management' version '1.1.6'
 	id 'com.github.ben-manes.versions' version '0.48.0'
+	id 'com.diffplug.spotless' version '6.23.3' // spotless
+	id 'com.google.cloud.tools.jib' version '3.4.4' // jib
 }
 
 group = 'com.groom'
@@ -51,7 +53,7 @@ spotless {
 
 jib {
 	from {
-		image = "openjdk:17-alpine"
+		image = "openjdk:21-alpine"
 	}
 	to {
 		image = "orbit/api"
