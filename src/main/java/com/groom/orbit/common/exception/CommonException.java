@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommonException extends RuntimeException {
 
-    private final ErrorCode errorCode;
+  private final ErrorCode errorCode;
 
-    @Override
-    public String getMessage() {
-        return errorCode.getMessage();
-    }
+  @Override
+  public String getMessage() {
+    return errorCode.getMessage();
+  }
 }
