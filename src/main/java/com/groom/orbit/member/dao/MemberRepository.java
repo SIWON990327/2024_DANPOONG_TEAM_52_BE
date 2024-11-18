@@ -1,4 +1,4 @@
-package com.groom.orbit.domain.member.dao;
+package com.groom.orbit.member.dao;
 
 import java.util.Optional;
 

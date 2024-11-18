@@ -1,11 +1,11 @@
-package com.groom.orbit.domain.member.app;
+package com.groom.orbit.member.app;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.orbit.config.oAuth.*;
-import com.groom.orbit.domain.member.dao.Member;
-import com.groom.orbit.domain.member.dao.MemberRepository;
+import com.groom.orbit.member.dao.Member;
+import com.groom.orbit.member.dao.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
