@@ -1,4 +1,4 @@
-package com.groom.orbit.config.kakao;
+package com.groom.orbit.config.security.kakao;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -9,9 +9,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.groom.orbit.config.oAuth.OAuthApiClient;
-import com.groom.orbit.config.oAuth.OAuthInfoResponse;
-import com.groom.orbit.config.oAuth.OAuthLoginParams;
+import com.groom.orbit.config.security.oAuth.OAuthApiClient;
+import com.groom.orbit.config.security.oAuth.OAuthInfoResponse;
+import com.groom.orbit.config.security.oAuth.OAuthLoginParams;
 
 import lombok.RequiredArgsConstructor;
 
