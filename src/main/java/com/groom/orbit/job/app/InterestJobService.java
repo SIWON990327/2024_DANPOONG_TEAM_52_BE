@@ -9,6 +9,7 @@ import com.groom.orbit.job.app.dto.JobDetailResponseDto;
 import com.groom.orbit.job.dao.jpa.InterestJobRepository;
 import com.groom.orbit.job.dao.jpa.entity.InterestJob;
 import com.groom.orbit.job.dao.jpa.entity.Job;
+import com.groom.orbit.member.dao.jpa.entity.Member;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,5 +29,9 @@ public class InterestJobService {
     return jobs.stream()
         .map(job -> new JobDetailResponseDto(job.getJobId(), job.getName()))
         .toList();
+  }
+
+  public void saveInterestJob(Member member, List<Job> jobs) {
+    member.addInterestJobs(jobs);
   }
 }
