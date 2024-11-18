@@ -9,6 +9,7 @@ import com.groom.orbit.job.app.dto.JobDetailResponseDto;
 import com.groom.orbit.job.dao.jpa.InterestJobRepository;
 import com.groom.orbit.job.dao.jpa.entity.InterestJob;
 import com.groom.orbit.job.dao.jpa.entity.Job;
+import com.groom.orbit.member.app.MemberQueryService;
 import com.groom.orbit.member.dao.jpa.entity.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InterestJobService {
 
+  private final MemberQueryService memberQueryService;
   private final InterestJobRepository interestJobRepository;
 
   public List<JobDetailResponseDto> findJobsByMemberId(Long memberId) {
@@ -31,7 +33,8 @@ public class InterestJobService {
         .toList();
   }
 
-  public void saveInterestJob(Member member, List<Job> jobs) {
+  public void saveInterestJob(Long memberId, List<Job> jobs) {
+    Member member = memberQueryService.findMember(memberId);
     member.addInterestJobs(jobs);
   }
 }
