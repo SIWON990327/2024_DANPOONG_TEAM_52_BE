@@ -2,13 +2,15 @@ package com.groom.orbit.auth.dao.entity;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
-@Entity(name = "member")
+@Entity(name = "auth_member")
+@Table(name = "member")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
