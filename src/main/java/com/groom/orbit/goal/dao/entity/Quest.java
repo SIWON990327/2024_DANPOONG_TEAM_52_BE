@@ -28,9 +28,6 @@ public class Quest extends BaseTimeEntity {
   private String title;
 
   @Column(nullable = false)
-  private String content;
-
-  @Column(nullable = false)
   private Boolean isComplete = false;
 
   private java.sql.Timestamp deadline;
