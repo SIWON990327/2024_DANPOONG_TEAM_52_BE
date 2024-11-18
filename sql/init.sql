@@ -79,7 +79,6 @@ CREATE TABLE quest
 (
     quest_id             BIGINT       NOT NULL PRIMARY KEY,
     title                VARCHAR(50)  NOT NULL,
-    content              VARCHAR(255) NOT NULL,
     is_complete          BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deadline             TIMESTAMP,

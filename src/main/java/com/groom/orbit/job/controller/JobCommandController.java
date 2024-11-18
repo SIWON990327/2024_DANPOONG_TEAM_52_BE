@@ -19,9 +19,7 @@ public class JobCommandController {
 
   private final JobCommandService jobCommandService;
 
-  /**
-   * TODO add annotation
-   */
+  /** TODO add annotation */
   @PutMapping
   public ResponseDto<CommonSuccessDto> addInterestJob(
       Long memberId, @RequestBody InterestJobRequestDto dto) {
