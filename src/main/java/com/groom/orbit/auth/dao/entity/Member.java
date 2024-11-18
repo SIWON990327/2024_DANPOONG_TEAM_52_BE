@@ -19,16 +19,16 @@ public class Member {
   @Column(name = "member_id")
   private Long id;
 
-  @Column(name = "nickname")
+  @Column(name = "nickname", length = 100)
   private String nickname;
 
   @Column(name = "image_url")
   private String imageUrl;
 
-  @Column(name = "known_prompt")
+  @Column(name = "known_prompt", length = 1000)
   private String knownPrompt;
 
-  @Column(name = "help_prompt")
+  @Column(name = "help_prompt", length = 1000)
   private String helpPrompt;
 
   @Column(name = "is_notification")
