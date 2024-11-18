@@ -1,4 +1,4 @@
-package com.groom.orbit.member.dao;
+package com.groom.orbit.auth.dao;
 
 import java.util.Optional;
 
