@@ -1,4 +1,4 @@
-package com.groom.orbit.config.oAuth;
+package com.groom.orbit.config.security.oAuth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,9 +1,9 @@
-package com.groom.orbit.config.kakao;
+package com.groom.orbit.config.security.kakao;
 
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.groom.orbit.config.oAuth.OAuthLoginParams;
+import com.groom.orbit.config.security.oAuth.OAuthLoginParams;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

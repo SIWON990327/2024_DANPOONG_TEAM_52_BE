@@ -1,8 +1,8 @@
-package com.groom.orbit.config.kakao;
+package com.groom.orbit.config.security.kakao;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.groom.orbit.config.oAuth.OAuthInfoResponse;
+import com.groom.orbit.config.security.oAuth.OAuthInfoResponse;
 
 import lombok.Getter;
 

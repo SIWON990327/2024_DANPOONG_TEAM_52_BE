@@ -1,4 +1,4 @@
-package com.groom.orbit.config.kakao;
+package com.groom.orbit.config.security.kakao;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
