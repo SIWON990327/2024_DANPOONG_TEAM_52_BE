@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS member;
 -- member 테이블을 먼저 생성
 CREATE TABLE member
 (
-    member_id       BIGINT        NOT NULL PRIMARY KEY,
+    member_id       BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nickname        VARCHAR(100)  NOT NULL,
     image_url       VARCHAR(500)  NOT NULL,
     known_prompt    VARCHAR(1000) NOT NULL DEFAULT '',

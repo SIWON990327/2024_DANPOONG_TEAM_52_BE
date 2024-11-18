@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "member")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,17 +23,22 @@ public class Member {
   private String nickname;
 
   @Column(name = "image_url")
-  private String imageUrl;
+  @Builder.Default
+  private String imageUrl = "";
 
   @Column(name = "known_prompt", length = 1000)
-  private String knownPrompt;
+  @Builder.Default
+  private String knownPrompt = "";
 
   @Column(name = "help_prompt", length = 1000)
-  private String helpPrompt;
+  @Builder.Default
+  private String helpPrompt = "";
 
   @Column(name = "is_notification")
-  private Boolean isNotification;
+  @Builder.Default
+  private Boolean isNotification = false;
 
   @Column(name = "is_profile")
-  private Boolean isProfile;
+  @Builder.Default
+  private Boolean isProfile = false;
 }
