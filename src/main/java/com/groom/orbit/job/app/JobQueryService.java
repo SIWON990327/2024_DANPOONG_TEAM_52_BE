@@ -43,4 +43,8 @@ public class JobQueryService {
   public List<JobDetailResponseDto> findJobsByUser(Long memberId) {
     return interestJobService.findJobsByMemberId(memberId);
   }
+
+  public List<Job> findJobsByIds(List<Long> ids) {
+    return jobRepository.findAllById(ids);
+  }
 }
