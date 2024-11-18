@@ -15,8 +15,6 @@ DROP TABLE IF EXISTS job;
 CREATE TABLE member
 (
     member_id       BIGINT        NOT NULL PRIMARY KEY,
-    email           VARCHAR(255)  NOT NULL,
-    social_id       BIGINT        NOT NULL,
     nickname        VARCHAR(100)  NOT NULL,
     image_url       VARCHAR(500)  NOT NULL,
     known_prompt    VARCHAR(1000) NOT NULL DEFAULT '',
@@ -62,7 +60,6 @@ CREATE TABLE goal
     goal_id     BIGINT      NOT NULL PRIMARY KEY,
     title       VARCHAR(50) NOT NULL,
     category    VARCHAR(10) NOT NULL,
-    is_complete BOOLEAN     NOT NULL DEFAULT FALSE,
     count       INT         NOT NULL DEFAULT 0
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -71,6 +68,7 @@ CREATE TABLE member_goal
 (
     member_id BIGINT NOT NULL,
     goal_id   BIGINT NOT NULL,
+    is_complete BOOLEAN     NOT NULL DEFAULT FALSE,
     PRIMARY KEY (member_id, goal_id),
     CONSTRAINT member_goal_member FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT member_goal_goal FOREIGN KEY (goal_id) REFERENCES goal (goal_id)
@@ -97,7 +95,8 @@ CREATE TABLE schedule
 (
     schedule_id BIGINT       NOT NULL PRIMARY KEY,
     content     VARCHAR(100) NOT NULL,
-    date        timestamp    NOT NULL,
+    start_date TIMESTAMP NOT NULL DEFAULT CURRENT_DATE,
+    end_date   TIMESTAMP,
     member_id   BIGINT       NOT NULL,
     CONSTRAINT schedule_member FOREIGN KEY (member_id) REFERENCES member (member_id)
 ) ENGINE = InnoDB
