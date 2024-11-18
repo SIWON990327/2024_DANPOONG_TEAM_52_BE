@@ -1,4 +1,4 @@
-package com.groom.orbit.auth.dao;
+package com.groom.orbit.auth.dao.entity;
 
 import jakarta.persistence.*;
 

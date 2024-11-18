@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.orbit.config.oAuth.*;
-import com.groom.orbit.auth.dao.Member;
+import com.groom.orbit.auth.dao.entity.Member;
 import com.groom.orbit.auth.dao.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
