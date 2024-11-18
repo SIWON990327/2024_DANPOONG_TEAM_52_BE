@@ -2,14 +2,14 @@ CREATE DATABASE IF NOT EXISTS orbit;
 
 USE orbit;
 
-DROP TABLE IF EXISTS schedule;
-DROP TABLE IF EXISTS quest;
-DROP TABLE IF EXISTS member_goal;
-DROP TABLE IF EXISTS goal;
-DROP TABLE IF EXISTS resume;
-DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS interest_job;
+DROP TABLE IF EXISTS resume;
+DROP TABLE IF EXISTS member_goal;
+DROP TABLE IF EXISTS quest;
+DROP TABLE IF EXISTS schedule;
+DROP TABLE IF EXISTS goal;
 DROP TABLE IF EXISTS job;
+DROP TABLE IF EXISTS member;
 
 -- member 테이블을 먼저 생성
 CREATE TABLE member
@@ -57,18 +57,18 @@ CREATE TABLE resume
 
 CREATE TABLE goal
 (
-    goal_id     BIGINT      NOT NULL PRIMARY KEY,
-    title       VARCHAR(50) NOT NULL,
-    category    VARCHAR(10) NOT NULL,
-    count       INT         NOT NULL DEFAULT 0
+    goal_id  BIGINT      NOT NULL PRIMARY KEY,
+    title    VARCHAR(50) NOT NULL,
+    category VARCHAR(10) NOT NULL,
+    count    INT         NOT NULL DEFAULT 0
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE member_goal
 (
-    member_id BIGINT NOT NULL,
-    goal_id   BIGINT NOT NULL,
-    is_complete BOOLEAN     NOT NULL DEFAULT FALSE,
+    member_id   BIGINT  NOT NULL,
+    goal_id     BIGINT  NOT NULL,
+    is_complete BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (member_id, goal_id),
     CONSTRAINT member_goal_member FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT member_goal_goal FOREIGN KEY (goal_id) REFERENCES goal (goal_id)
@@ -95,8 +95,8 @@ CREATE TABLE schedule
 (
     schedule_id BIGINT       NOT NULL PRIMARY KEY,
     content     VARCHAR(100) NOT NULL,
-    start_date TIMESTAMP NOT NULL DEFAULT CURRENT_DATE,
-    end_date   TIMESTAMP,
+    start_date  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    end_date    TIMESTAMP             DEFAULT NULL,
     member_id   BIGINT       NOT NULL,
     CONSTRAINT schedule_member FOREIGN KEY (member_id) REFERENCES member (member_id)
 ) ENGINE = InnoDB
