@@ -1,5 +1,7 @@
 package com.groom.orbit.config.security;
 
+import static com.groom.orbit.config.security.SecurityConst.ALLOWED_URLS;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final String[] allowedUrls = {"/api", "api/auth/kakao", "/kakao/**"};
-
   private final CorsConfig corsConfig;
 
   @Bean
@@ -36,7 +36,11 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
         .authorizeHttpRequests(
             (authorize) ->
-                authorize.requestMatchers(allowedUrls).permitAll().anyRequest().authenticated());
+                authorize
+                    .requestMatchers(ALLOWED_URLS.toArray(new String[0]))
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated());
 
     return http.build();
   }

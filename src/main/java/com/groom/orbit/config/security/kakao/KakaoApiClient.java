@@ -1,5 +1,16 @@
 package com.groom.orbit.config.security.kakao;
 
+import static com.groom.orbit.config.security.SecurityConst.AUTHORIZATION_HEADER;
+import static com.groom.orbit.config.security.SecurityConst.TOKEN_PREFIX;
+import static com.groom.orbit.config.security.kakao.KakaoSecurityConst.CLIENT_ID;
+import static com.groom.orbit.config.security.kakao.KakaoSecurityConst.CLIENT_SECRET;
+import static com.groom.orbit.config.security.kakao.KakaoSecurityConst.GRANT_TYPE;
+import static com.groom.orbit.config.security.kakao.KakaoSecurityConst.KAKAO_AUTHORIZATION_CODE_GRANT_TYPE;
+import static com.groom.orbit.config.security.kakao.KakaoSecurityConst.KAKAO_REQUEST_PROPERTY_PROFILE;
+import static com.groom.orbit.config.security.kakao.KakaoSecurityConst.PROPERTY_KEYS;
+import static com.groom.orbit.config.security.kakao.KakaoSecurityConst.REQUEST_ACCESS_TOKEN_URI;
+import static com.groom.orbit.config.security.kakao.KakaoSecurityConst.REQUEST_OAUTH_INFO_URI;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,8 +30,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoApiClient implements OAuthApiClient {
 
-  private static final String GRANT_TYPE = "authorization_code";
-
   @Value("${oauth.kakao.url.auth}")
   private String authUrl;
 
@@ -38,15 +47,15 @@ public class KakaoApiClient implements OAuthApiClient {
   @Override
   public String requestAccessToken(OAuthLoginParams params) {
 
-    String url = authUrl + "/oauth/token";
+    String url = authUrl + REQUEST_ACCESS_TOKEN_URI;
 
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
     MultiValueMap<String, String> body = params.makeBody();
-    body.add("grant_type", GRANT_TYPE);
-    body.add("client_id", clientId);
-    body.add("client_secret", clientSecret);
+    body.add(GRANT_TYPE, KAKAO_AUTHORIZATION_CODE_GRANT_TYPE);
+    body.add(CLIENT_ID, clientId);
+    body.add(CLIENT_SECRET, clientSecret);
 
     HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
@@ -59,14 +68,14 @@ public class KakaoApiClient implements OAuthApiClient {
 
   @Override
   public OAuthInfoResponse requestOauthInfo(String accessToken) {
-    String url = apiUrl + "/v2/user/me";
+    String url = apiUrl + REQUEST_OAUTH_INFO_URI;
 
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-    httpHeaders.set("Authorization", "Bearer " + accessToken);
+    httpHeaders.set(AUTHORIZATION_HEADER, TOKEN_PREFIX + accessToken);
 
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-    body.add("property_keys", "[\"kakao_account.profile\"]");
+    body.add(PROPERTY_KEYS, KAKAO_REQUEST_PROPERTY_PROFILE);
 
     HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 

@@ -1,5 +1,9 @@
 package com.groom.orbit.config.security.oAuth;
 
+import static com.groom.orbit.config.security.SecurityConst.ACCESS_TOKEN_EXPIRED_TIME;
+import static com.groom.orbit.config.security.SecurityConst.REFRESH_TOKEN_EXPIRED_TIME;
+import static com.groom.orbit.config.security.SecurityConst.TOKEN_PREFIX;
+
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
@@ -11,10 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class AuthTokenGenerator {
-
-  private static final String BEARER = "Bearer";
-  private static final long ACCESS_TOKEN_EXPIRED_TIME = 1000 * 60 * 30; // 30분
-  private static final long REFRESH_TOKEN_EXPIRED_TIME = 1000 * 60 * 60; // 1시간
 
   private final JwtTokenProvider jwtTokenProvider;
 
@@ -28,7 +28,7 @@ public class AuthTokenGenerator {
     String accessToken = jwtTokenProvider.generate(subject, accessTokenExpiredTime);
     String refreshToken = jwtTokenProvider.generate(subject, refreshTokenExpiredTime);
 
-    return AuthToken.of(accessToken, refreshToken, BEARER, ACCESS_TOKEN_EXPIRED_TIME / 1000L);
+    return AuthToken.of(accessToken, refreshToken, TOKEN_PREFIX, ACCESS_TOKEN_EXPIRED_TIME / 1000L);
   }
 
   public Long extractMemberId(String accessToken) {
