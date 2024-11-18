@@ -36,5 +36,4 @@ public class KakaoInfoResponse implements OAuthInfoResponse {
   public String getKakaoImage() {
     return kakaoAccount.profile.image;
   }
-
 }
