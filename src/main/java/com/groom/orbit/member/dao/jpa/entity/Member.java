@@ -1,17 +1,21 @@
-package com.groom.orbit.auth.dao.entity;
+package com.groom.orbit.member.dao.jpa.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "member")
+@Table(name = "member")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Member {
 
   @Id
@@ -23,22 +27,17 @@ public class Member {
   private String nickname;
 
   @Column(name = "image_url")
-  @Builder.Default
   private String imageUrl = "";
 
   @Column(name = "known_prompt", length = 1000)
-  @Builder.Default
   private String knownPrompt = "";
 
   @Column(name = "help_prompt", length = 1000)
-  @Builder.Default
   private String helpPrompt = "";
 
   @Column(name = "is_notification")
-  @Builder.Default
   private Boolean isNotification = false;
 
   @Column(name = "is_profile")
-  @Builder.Default
   private Boolean isProfile = false;
 }

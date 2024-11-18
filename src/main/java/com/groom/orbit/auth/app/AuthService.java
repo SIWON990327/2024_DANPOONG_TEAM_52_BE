@@ -3,8 +3,8 @@ package com.groom.orbit.auth.app;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.groom.orbit.auth.dao.MemberRepository;
-import com.groom.orbit.auth.dao.entity.Member;
+import com.groom.orbit.auth.dao.AuthMemberRepository;
+import com.groom.orbit.auth.dao.entity.AuthMember;
 import com.groom.orbit.config.security.oAuth.AuthToken;
 import com.groom.orbit.config.security.oAuth.AuthTokenGenerator;
 import com.groom.orbit.config.security.oAuth.OAuthInfoResponse;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class AuthService {
 
-  private final MemberRepository memberRepository;
+  private final AuthMemberRepository memberRepository;
   private final AuthTokenGenerator authTokensGenerator;
   private final RequestOAuthInfoService requestOAuthInfoService;
 
@@ -31,12 +31,12 @@ public class AuthService {
   public Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
     return memberRepository
         .findByNickname(oAuthInfoResponse.getKakaoNickname())
-        .map(Member::getId)
+        .map(AuthMember::getId)
         .orElseGet(() -> newUser(oAuthInfoResponse));
   }
 
   private Long newUser(OAuthInfoResponse oAuthInfoResponse) {
-    Member member = Member.builder().nickname(oAuthInfoResponse.getKakaoNickname()).build();
+    AuthMember member = AuthMember.builder().nickname(oAuthInfoResponse.getKakaoNickname()).build();
 
     return memberRepository.save(member).getId();
   }
