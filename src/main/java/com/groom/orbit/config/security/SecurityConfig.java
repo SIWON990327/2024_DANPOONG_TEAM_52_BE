@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.groom.orbit.config.web.CorsConfig;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -18,24 +20,23 @@ public class SecurityConfig {
 
   private final String[] allowedUrls = {"/api", "api/auth/kakao", "/kakao/**"};
 
+  private final CorsConfig corsConfig;
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-    http.formLogin(AbstractHttpConfigurer::disable);
-
-    http.httpBasic(AbstractHttpConfigurer::disable);
-
-    http.csrf(AbstractHttpConfigurer::disable);
-
-    http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
-
-    http.sessionManagement(
-        sessionManagement ->
-            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-    http.authorizeHttpRequests(
-        (authorize) ->
-            authorize.requestMatchers(allowedUrls).permitAll().anyRequest().authenticated());
+    http.formLogin(AbstractHttpConfigurer::disable)
+        .httpBasic(AbstractHttpConfigurer::disable)
+        .csrf(AbstractHttpConfigurer::disable)
+        .headers(AbstractHttpConfigurer::disable)
+        .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+        .sessionManagement(
+            sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
+        .authorizeHttpRequests(
+            (authorize) ->
+                authorize.requestMatchers(allowedUrls).permitAll().anyRequest().authenticated());
 
     return http.build();
   }
