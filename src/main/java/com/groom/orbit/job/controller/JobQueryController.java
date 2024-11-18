@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.job.app.JobQueryService;
 import com.groom.orbit.job.app.dto.JobDetailResponseDto;
@@ -27,7 +28,7 @@ public class JobQueryController {
 
   /** TODO add annotation */
   @GetMapping("/member")
-  public ResponseDto<List<JobDetailResponseDto>> findJobs(Long memberId) {
+  public ResponseDto<List<JobDetailResponseDto>> findJobs(@AuthMember Long memberId) {
     return ResponseDto.ok(jobQueryService.findJobsByUser(memberId));
   }
 }
