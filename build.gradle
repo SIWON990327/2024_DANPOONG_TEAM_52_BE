@@ -107,10 +107,6 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
 tasks.named('compileJava') {
 	dependsOn 'spotlessApply'
 	dependsOn 'addGitHooks'
