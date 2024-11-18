@@ -29,10 +29,10 @@ public class InterestJob {
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @Column(name = "member_id")
+  @Column(name = "member_id", insertable = false, updatable = false)
   private Long memberId;
 
-  @Column(name = "job_id")
+  @Column(name = "job_id", insertable = false, updatable = false)
   private Long jobId;
 
   public static InterestJob create(Member member, Job job) {
