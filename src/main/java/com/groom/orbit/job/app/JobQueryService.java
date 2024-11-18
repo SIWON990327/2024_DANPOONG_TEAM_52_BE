@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class JobQueryService {
 
   private final JobRepository jobRepository;
+  private final InterestJobService interestJobService;
 
   public JobGroupingByCategoryResponseDto findAllJobs() {
     List<Job> findJobs = jobRepository.findAll();
@@ -37,5 +38,9 @@ public class JobQueryService {
                         Collectors.toList())));
 
     return new JobGroupingByCategoryResponseDto(jobs);
+  }
+
+  public List<JobDetailResponseDto> findJobsByUser(Long memberId) {
+    return interestJobService.findJobsByMemberId(memberId);
   }
 }
