@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.job.app.JobCommandService;
@@ -22,7 +23,7 @@ public class JobCommandController {
   /** TODO add annotation */
   @PutMapping
   public ResponseDto<CommonSuccessDto> addInterestJob(
-      Long memberId, @RequestBody InterestJobRequestDto dto) {
+      @AuthMember Long memberId, @RequestBody InterestJobRequestDto dto) {
     return ResponseDto.created(jobCommandService.saveInterestJob(memberId, dto));
   }
 }

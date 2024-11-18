@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.goal.app.QuestQueryService;
 import com.groom.orbit.goal.app.dto.QuestInfoResponseDto;
@@ -23,7 +24,7 @@ public class QuestQueryController {
   /** TODO add annotation */
   @GetMapping
   public ResponseDto<List<QuestInfoResponseDto>> findQuest(
-      Long memberId, @RequestParam("goal_id") Long goalId) {
+      @AuthMember Long memberId, @RequestParam("goal_id") Long goalId) {
     return ResponseDto.ok(questQueryService.findQuestsByGoalId(memberId, goalId));
   }
 }
