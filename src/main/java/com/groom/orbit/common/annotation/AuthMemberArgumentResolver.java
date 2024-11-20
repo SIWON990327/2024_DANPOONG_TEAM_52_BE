@@ -1,19 +1,13 @@
 package com.groom.orbit.common.annotation;
 
-import static com.groom.orbit.common.exception.ErrorCode.NOT_FOUND_MEMBER;
-
 import org.springframework.core.MethodParameter;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.groom.orbit.common.exception.CommonException;
-import com.groom.orbit.member.dao.jpa.entity.Member;
+import com.groom.orbit.config.security.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,9 +15,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
+  private final JwtTokenProvider jwtTokenProvider;
+
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
-    return parameter.getParameterType().equals(Member.class)
+    return parameter.getParameterType().equals(Long.class)
         && parameter.hasParameterAnnotation(AuthMember.class);
   }
 
@@ -34,17 +30,8 @@ public class AuthMemberArgumentResolver implements HandlerMethodArgumentResolver
       NativeWebRequest webRequest,
       WebDataBinderFactory binderFactory) {
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String authorization = webRequest.getHeader("Authorization");
 
-    Object principal = authentication.getPrincipal();
-
-    if (principal == null || principal.getClass() == String.class) {
-      throw new CommonException(NOT_FOUND_MEMBER);
-    }
-
-    UsernamePasswordAuthenticationToken authenticationToken =
-        (UsernamePasswordAuthenticationToken) authentication;
-
-    return Long.parseLong(authenticationToken.getName());
+    return jwtTokenProvider.extractId(authorization);
   }
 }
