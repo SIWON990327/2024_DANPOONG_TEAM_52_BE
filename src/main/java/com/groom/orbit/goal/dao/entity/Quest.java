@@ -1,7 +1,10 @@
 package com.groom.orbit.goal.dao.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,25 +33,28 @@ public class Quest extends BaseTimeEntity {
   @Column(nullable = false)
   private Boolean isComplete = false;
 
-  private java.sql.Timestamp deadline;
+  private LocalDate deadline;
 
   @Column(nullable = false)
   private Integer sequence;
 
-  @Column(nullable = false, columnDefinition = "false")
-  private Boolean isNotificationSend = false;
-
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id", nullable = false)
   private Member member;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "goal_id", nullable = false)
   private Goal goal;
 
-  @Column(name = "member_id", insertable = false, updatable = false)
-  private Long memberId;
+  public static Quest create(
+      String title, MemberGoal memberGoal, LocalDate deadline, int newSequence) {
+    Quest quest = new Quest();
+    quest.title = title;
+    quest.member = memberGoal.getMember();
+    quest.goal = memberGoal.getGoal();
+    quest.sequence = newSequence;
+    quest.deadline = deadline;
 
-  @Column(name = "goal_id", insertable = false, updatable = false)
-  private Long goalId;
+    return quest;
+  }
 }

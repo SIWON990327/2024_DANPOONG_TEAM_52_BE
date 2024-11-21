@@ -1,6 +1,6 @@
 package com.groom.orbit.common.dao.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -18,5 +18,5 @@ public abstract class BaseTimeEntity {
 
   @CreatedDate
   @Column(nullable = false, updatable = false, name = "created_at")
-  private Timestamp createdAt;
+  private LocalDateTime createdAt;
 }
