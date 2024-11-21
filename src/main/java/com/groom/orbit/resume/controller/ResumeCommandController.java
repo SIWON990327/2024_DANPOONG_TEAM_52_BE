@@ -1,15 +1,12 @@
 package com.groom.orbit.resume.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.resume.app.ResumeCommendService;
-import com.groom.orbit.resume.app.dto.CreateResumeRequestDto;
+import com.groom.orbit.resume.app.dto.ResumeRequestDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +19,15 @@ public class ResumeCommandController {
 
   @PostMapping()
   public ResponseDto<CommonSuccessDto> createResume(
-      @AuthMember Long memberId, @RequestBody CreateResumeRequestDto requestDto) {
+      @AuthMember Long memberId, @RequestBody ResumeRequestDto requestDto) {
     return ResponseDto.ok(resumeCommandService.createResume(memberId, requestDto));
+  }
+
+  @PatchMapping("/{resumeId}")
+  public ResponseDto<CommonSuccessDto> updateResume(
+      @AuthMember Long memberId,
+      @PathVariable Long resumeId,
+      @RequestBody ResumeRequestDto requestDto) {
+    return ResponseDto.ok(resumeCommandService.updateResume(resumeId, requestDto));
   }
 }
