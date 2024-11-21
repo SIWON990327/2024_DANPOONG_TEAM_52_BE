@@ -44,4 +44,9 @@ public class ResumeCommendService {
 
     return CommonSuccessDto.fromEntity(true);
   }
+
+  public CommonSuccessDto deleteResume(Long resumeId) {
+    resumeRepository.deleteById(resumeId);
+    return CommonSuccessDto.fromEntity(true);
+  }
 }
