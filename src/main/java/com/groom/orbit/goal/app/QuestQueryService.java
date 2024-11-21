@@ -3,6 +3,7 @@ package com.groom.orbit.goal.app;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.orbit.goal.app.dto.QuestInfoResponseDto;
 import com.groom.orbit.goal.dao.QuestRepository;
@@ -11,6 +12,7 @@ import com.groom.orbit.goal.dao.entity.Quest;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class QuestQueryService {
 
@@ -25,5 +27,9 @@ public class QuestQueryService {
                 new QuestInfoResponseDto(
                     quest.getQuestId(), quest.getTitle(), quest.getIsComplete()))
         .toList();
+  }
+
+  public int getQuestCountsByGoalId(Long goalId) {
+    return questRepository.getCountByGoalId(goalId);
   }
 }
