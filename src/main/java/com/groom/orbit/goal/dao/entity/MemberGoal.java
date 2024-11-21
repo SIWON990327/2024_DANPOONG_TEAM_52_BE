@@ -11,8 +11,6 @@ import jakarta.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 
-import com.groom.orbit.common.exception.CommonException;
-import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.member.dao.jpa.entity.Member;
 
 import lombok.Getter;
@@ -24,24 +22,24 @@ import lombok.Getter;
 public class MemberGoal {
 
   @Id
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "member_id")
-  private Member member;
+  @Column(name = "member_id") // 필드 명시
+  private Long memberId; // 변경
 
   @Id
+  @Column(name = "goal_id") // 필드 명시
+  private Long goalId; // 변경
+
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "goal_id")
+  @JoinColumn(name = "member_id", insertable = false, updatable = false)
+  private Member member;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "goal_id", insertable = false, updatable = false)
   private Goal goal;
 
   @ColumnDefault("false")
   @Column(nullable = false)
   private Boolean isComplete;
-
-  @Column(name = "member_id", insertable = false, updatable = false)
-  private Long memberId;
-
-  @Column(name = "goal_id", insertable = false, updatable = false)
-  private Long goalId;
 
   public static MemberGoal create(Member member, Goal goal) {
     MemberGoal memberGoal = new MemberGoal();
@@ -49,11 +47,5 @@ public class MemberGoal {
     memberGoal.goal = goal;
 
     return memberGoal;
-  }
-
-  public void validateMember(Member member) {
-    if (!memberId.equals(member.getId())) {
-      throw new CommonException(ErrorCode.ACCESS_DENIED);
-    }
   }
 }
