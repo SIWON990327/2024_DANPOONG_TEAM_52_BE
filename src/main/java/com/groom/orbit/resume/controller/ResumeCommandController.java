@@ -30,4 +30,10 @@ public class ResumeCommandController {
       @RequestBody ResumeRequestDto requestDto) {
     return ResponseDto.ok(resumeCommandService.updateResume(resumeId, requestDto));
   }
+
+  @DeleteMapping("/{resumeId}")
+  public ResponseDto<CommonSuccessDto> deleteResume(
+      @AuthMember Long memberId, @PathVariable Long resumeId) {
+    return ResponseDto.ok(resumeCommandService.deleteResume(resumeId));
+  }
 }
