@@ -27,7 +27,7 @@ CREATE TABLE member
 -- 그 후 다른 테이블을 생성
 CREATE TABLE job
 (
-    job_id   BIGINT      NOT NULL PRIMARY KEY,
+    job_id   BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     category VARCHAR(50) NOT NULL,
     name     VARCHAR(50) NOT NULL
 ) ENGINE = InnoDB
@@ -45,11 +45,11 @@ CREATE TABLE interest_job
 
 CREATE TABLE resume
 (
-    resume_id  BIGINT      NOT NULL PRIMARY KEY,
+    resume_id  BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     category   VARCHAR(10) NOT NULL,
     content    VARCHAR(50) NOT NULL,
-    start_date TIMESTAMP,
-    end_date   TIMESTAMP,
+    start_date DATE,
+    end_date   DATE,
     member_id  BIGINT      NOT NULL,
     CONSTRAINT fk_resume_member FOREIGN KEY (member_id) REFERENCES member (member_id)
 ) ENGINE = InnoDB
@@ -57,7 +57,7 @@ CREATE TABLE resume
 
 CREATE TABLE goal
 (
-    goal_id  BIGINT      NOT NULL PRIMARY KEY,
+    goal_id  BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title    VARCHAR(50) NOT NULL,
     category VARCHAR(10) NOT NULL,
     count    INT         NOT NULL DEFAULT 0
@@ -77,25 +77,24 @@ CREATE TABLE member_goal
 
 CREATE TABLE quest
 (
-    quest_id             BIGINT       NOT NULL PRIMARY KEY,
-    title                VARCHAR(50)  NOT NULL,
-    is_complete          BOOLEAN      NOT NULL DEFAULT FALSE,
-    created_at           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deadline             TIMESTAMP,
-    sequence             INT          NOT NULL,
-    is_notification_send BOOLEAN      NOT NULL DEFAULT FALSE,
-    member_id            BIGINT       NOT NULL,
-    goal_id              BIGINT       NOT NULL,
+    quest_id             BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title                VARCHAR(50) NOT NULL,
+    is_complete          BOOLEAN     NOT NULL DEFAULT FALSE,
+    created_at           DATETIME    NOT NULL,
+    deadline             DATE        NOT NULL,
+    sequence             INT         NOT NULL,
+    member_id            BIGINT      NOT NULL,
+    goal_id              BIGINT      NOT NULL,
     CONSTRAINT quest_member FOREIGN KEY (member_id, goal_id) REFERENCES member_goal (member_id, goal_id)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE schedule
 (
-    schedule_id BIGINT       NOT NULL PRIMARY KEY,
+    schedule_id BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     content     VARCHAR(100) NOT NULL,
-    start_date  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    end_date    TIMESTAMP             DEFAULT NULL,
+    start_date  DATE         NOT NULL,
+    end_date    DATE         NOT NULL,
     member_id   BIGINT       NOT NULL,
     CONSTRAINT schedule_member FOREIGN KEY (member_id) REFERENCES member (member_id)
 ) ENGINE = InnoDB
