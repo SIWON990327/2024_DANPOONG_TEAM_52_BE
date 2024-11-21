@@ -13,5 +13,6 @@ public class SecurityConst {
   public static final long REFRESH_TOKEN_EXPIRED_TIME = 1000 * 60 * 60; // 1시간
 
   // requestMatcher
-  public static final List<String> ALLOWED_URLS = List.of("/api", "api/auth/kakao", "/kakao/**");
+  public static final List<String> ALLOWED_URLS =
+      List.of("/api", "api/auth/kakao", "/kakao/**", "/api/**");
 }
