@@ -1,6 +1,5 @@
 package com.groom.orbit.resume.app;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,23 +23,16 @@ public class ResumeQueryService {
 
   public GetResumeResponseDto getResume(Long memberId) {
 
-    Map<ResumeCategory, List<ResumeResponseDto>> resumeMap =
-        Arrays.stream(ResumeCategory.values())
-            .collect(
-                Collectors.toMap(
-                    category -> category, category -> findResumesByCategory(memberId, category)));
+    Map<ResumeCategory, List<ResumeResponseDto>> categorizedResumes =
+        resumeRepository.findAllByMemberId(memberId).stream()
+            .map(ResumeResponseDto::toResumeResponseDto)
+            .collect(Collectors.groupingBy(ResumeResponseDto::resumeCategory));
 
     return new GetResumeResponseDto(
-        resumeMap.get(ResumeCategory.ACADEMY),
-        resumeMap.get(ResumeCategory.CAREER),
-        resumeMap.get(ResumeCategory.QUALIFICATION),
-        resumeMap.get(ResumeCategory.EXPERIENCE),
-        resumeMap.get(ResumeCategory.ETC));
-  }
-
-  private List<ResumeResponseDto> findResumesByCategory(Long memberId, ResumeCategory category) {
-    return resumeRepository.findAllByResumeCategoryAndMemberId(category, memberId).stream()
-        .map(ResumeResponseDto::toResumeResponseDto)
-        .toList();
+        categorizedResumes.getOrDefault(ResumeCategory.ACADEMY, List.of()),
+        categorizedResumes.getOrDefault(ResumeCategory.CAREER, List.of()),
+        categorizedResumes.getOrDefault(ResumeCategory.QUALIFICATION, List.of()),
+        categorizedResumes.getOrDefault(ResumeCategory.EXPERIENCE, List.of()),
+        categorizedResumes.getOrDefault(ResumeCategory.ETC, List.of()));
   }
 }
