@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 
 import com.groom.orbit.job.dao.jpa.entity.InterestJob;
 import com.groom.orbit.job.dao.jpa.entity.Job;
+import com.groom.orbit.member.app.dto.request.UpdateMemberRequestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -61,5 +62,14 @@ public class Member {
     List<InterestJob> interestJobs =
         jobs.stream().map(job -> InterestJob.create(this, job)).toList();
     this.interestJobs.addAll(interestJobs);
+  }
+
+  public void updateMember(UpdateMemberRequestDto requestDto, String newProfileUrl) {
+    this.nickname = requestDto.nickname();
+    this.imageUrl = newProfileUrl;
+    this.knownPrompt = requestDto.knownPrompt();
+    this.helpPrompt = requestDto.helpPrompt();
+    this.isNotification = requestDto.isNotification();
+    this.isProfile = requestDto.isProfile();
   }
 }

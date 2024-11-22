@@ -1,12 +1,14 @@
 package com.groom.orbit.member.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.groom.orbit.common.annotation.AuthMember;
+import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.dto.ResponseDto;
-import com.groom.orbit.member.app.dto.response.MemberCommandService;
+import com.groom.orbit.member.app.MemberCommandService;
+import com.groom.orbit.member.app.dto.request.UpdateMemberRequestDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,5 +22,13 @@ public class MemberCommandController {
   @PostMapping("/ai")
   public ResponseDto<String> createAiFeedback(@AuthMember Long memberId) {
     return ResponseDto.ok(memberCommandService.createAiFeedbackResponse(memberId));
+  }
+
+  @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+  public ResponseDto<CommonSuccessDto> updateMember(
+      @AuthMember Long memberId,
+      @RequestPart(value = "file", required = false) MultipartFile file,
+      @RequestPart(value = "requestDto") UpdateMemberRequestDto requestDto) {
+    return ResponseDto.ok(memberCommandService.updateMember(memberId, requestDto, file));
   }
 }
