@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
-import com.groom.orbit.goal.app.dto.GetCompletedGoalResponseDto;
-import com.groom.orbit.goal.app.dto.GetOnGoingGoalResponseDto;
+import com.groom.orbit.goal.app.dto.response.GetCompletedGoalResponseDto;
+import com.groom.orbit.goal.app.dto.response.GetOnGoingGoalResponseDto;
 import com.groom.orbit.goal.app.query.QuestQueryService;
 import com.groom.orbit.goal.dao.MemberGoalRepository;
 import com.groom.orbit.goal.dao.entity.MemberGoal;

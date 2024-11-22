@@ -15,9 +15,9 @@ import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.goal.app.command.QuestCommandService;
 import com.groom.orbit.goal.app.command.QuestUpdateService;
-import com.groom.orbit.goal.app.dto.CreateQuestRequestDto;
-import com.groom.orbit.goal.app.dto.UpdateQuestRequestDto;
-import com.groom.orbit.goal.app.dto.UpdateQuestSequenceRequestDto;
+import com.groom.orbit.goal.app.dto.request.CreateQuestRequestDto;
+import com.groom.orbit.goal.app.dto.request.UpdateQuestRequestDto;
+import com.groom.orbit.goal.app.dto.request.UpdateQuestSequenceRequestDto;
 
 import lombok.RequiredArgsConstructor;
 

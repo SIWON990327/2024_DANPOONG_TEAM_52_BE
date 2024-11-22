@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.goal.app.MemberGoalService;
-import com.groom.orbit.goal.app.dto.GetCompletedGoalResponseDto;
-import com.groom.orbit.goal.app.dto.GetOnGoingGoalResponseDto;
+import com.groom.orbit.goal.app.dto.response.GetCompletedGoalResponseDto;
+import com.groom.orbit.goal.app.dto.response.GetOnGoingGoalResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
