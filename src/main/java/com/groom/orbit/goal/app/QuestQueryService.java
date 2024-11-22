@@ -31,7 +31,7 @@ public class QuestQueryService {
   }
 
   public List<QuestInfoResponseDto> findQuestsByGoalId(Long memberId, Long goalId) {
-    List<Quest> quests = questRepository.findByMemberIdAndGoalId(memberId, goalId);
+    List<Quest> quests = findQuestsByMemberAndGoal(memberId, goalId);
 
     return quests.stream()
         .map(
@@ -47,5 +47,13 @@ public class QuestQueryService {
 
   public List<Quest> findByQuestIdIn(List<Long> questIds) {
     return questRepository.findByQuestIdIn(questIds);
+  }
+
+  public long getTotalQuestCount(Long goalId) {
+    return questRepository.countByGoal_GoalId(goalId);
+  }
+
+  public long getFinishQuestCount(Long goalId) {
+    return questRepository.countCompletedByGoal_GoalId(goalId);
   }
 }
