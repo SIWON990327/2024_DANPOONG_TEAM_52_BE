@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.orbit.common.exception.CommonException;
+import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.goal.app.dto.QuestInfoResponseDto;
 import com.groom.orbit.goal.dao.QuestRepository;
 import com.groom.orbit.goal.dao.entity.Quest;
@@ -17,6 +19,12 @@ import lombok.RequiredArgsConstructor;
 public class QuestQueryService {
 
   private final QuestRepository questRepository;
+
+  public Quest findQuest(Long questId) {
+    return questRepository
+        .findById(questId)
+        .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_QUEST));
+  }
 
   public List<Quest> findQuestsByMemberAndGoal(Long memberId, Long goalId) {
     return questRepository.findByMemberIdAndGoalId(memberId, goalId);

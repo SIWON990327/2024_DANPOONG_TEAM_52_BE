@@ -14,6 +14,8 @@ import jakarta.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.groom.orbit.common.exception.CommonException;
+import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.job.dao.jpa.entity.InterestJob;
 import com.groom.orbit.job.dao.jpa.entity.Job;
 import com.groom.orbit.member.app.dto.request.UpdateMemberRequestDto;
@@ -76,5 +78,11 @@ public class Member {
     this.helpPrompt = requestDto.helpPrompt();
     this.isNotification = requestDto.isNotification();
     this.isProfile = requestDto.isProfile();
+  }
+
+  public void validateId(Long id) {
+    if (!this.id.equals(id)) {
+      throw new CommonException(ErrorCode.ACCESS_DENIED);
+    }
   }
 }
