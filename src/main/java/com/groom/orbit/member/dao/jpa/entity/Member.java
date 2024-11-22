@@ -12,11 +12,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.groom.orbit.job.dao.jpa.entity.InterestJob;
 import com.groom.orbit.job.dao.jpa.entity.Job;
 import com.groom.orbit.member.app.dto.request.UpdateMemberRequestDto;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +27,7 @@ import lombok.Setter;
 @Entity(name = "member")
 @Table(name = "member")
 @Getter
+@EqualsAndHashCode(of = {"id"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
@@ -36,7 +40,8 @@ public class Member {
   @Column(name = "nickname", length = 100)
   private String nickname;
 
-  @Column(name = "image_url")
+  @ColumnDefault("''")
+  @Column(name = "image_url", length = 500)
   private String imageUrl = "";
 
   @Column(name = "known_prompt", length = 1000)
@@ -52,7 +57,7 @@ public class Member {
   private Boolean isProfile = false;
 
   @Setter
-  @Column(name = "ai_feedback", length = 50000)
+  @Column(name = "ai_feedback", length = 50000, columnDefinition = "TEXT")
   private String aiFeedback = "";
 
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)

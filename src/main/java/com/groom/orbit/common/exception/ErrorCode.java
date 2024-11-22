@@ -21,6 +21,7 @@ public enum ErrorCode {
   NOT_FOUND_GOAL(40404, HttpStatus.NOT_FOUND, "해당 목표가 존재하지 않습니다."),
   NOT_FOUND_SCHEDULE(40405, HttpStatus.NOT_FOUND, "해당 일정이 존재하지 않습니다."),
   NOT_FOUND_S3(40406, HttpStatus.NOT_FOUND, "해당 파일을 찾을 수 없습니다."),
+  NOT_FOUND_QUEST(40407, HttpStatus.NOT_FOUND, "해당 퀘스트가 존재하지 않습니다."),
 
   // Invalid Argument Error
   MISSING_REQUEST_PARAMETER(40000, HttpStatus.BAD_REQUEST, "필수 요청 파라미터가 누락되었습니다."),
@@ -31,8 +32,8 @@ public enum ErrorCode {
   BAD_REQUEST_PARAMETER(40005, HttpStatus.BAD_REQUEST, "잘못된 요청 파라미터입니다."),
   BAD_REQUEST_JSON(40006, HttpStatus.BAD_REQUEST, "잘못된 JSON 형식입니다."),
   SEARCH_SHORT_LENGTH_ERROR(40007, HttpStatus.BAD_REQUEST, "검색어는 2글자 이상이어야 합니다."),
-  INVALID_ACCESS_URL(40015, HttpStatus.BAD_REQUEST, "잘못된 사용자 접근입니다."),
-  INVALID_FILE(40008, HttpStatus.BAD_REQUEST, "잘못된 파일입니다."),
+  INVALID_ACCESS_URL(40008, HttpStatus.BAD_REQUEST, "잘못된 사용자 접근입니다."),
+  INVALID_FILE(40009, HttpStatus.BAD_REQUEST, "잘못된 파일입니다."),
 
   // Gone Error
   GONE_SHARED_URL(41001, HttpStatus.GONE, "해당 공유 URL이 만료되었습니다."),
@@ -55,7 +56,8 @@ public enum ErrorCode {
 
   // Internal Server Error
   INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다."),
-  UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다.");
+  UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다."),
+  INVALID_STATE(50002, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다.");
 
   private final Integer code;
   private final HttpStatus httpStatus;
