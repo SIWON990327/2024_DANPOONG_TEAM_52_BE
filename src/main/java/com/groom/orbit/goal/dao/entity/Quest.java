@@ -69,4 +69,20 @@ public class Quest extends BaseTimeEntity {
       throw new CommonException(ErrorCode.INVALID_STATE);
     }
   }
+
+  public void validateMember(Long memberId) {
+    this.member.validateId(memberId);
+  }
+
+  public void update(String title, Boolean isComplete, LocalDate deadline) {
+    if (title != null && !title.equals(this.title)) {
+      this.title = title;
+    }
+    if (isComplete != null && !isComplete.equals(this.isComplete)) {
+      this.isComplete = isComplete;
+    }
+    if (deadline != null && !deadline.equals(this.deadline)) {
+      this.deadline = deadline;
+    }
+  }
 }
