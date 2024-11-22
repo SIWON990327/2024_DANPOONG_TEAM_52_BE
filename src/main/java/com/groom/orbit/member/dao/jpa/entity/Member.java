@@ -18,6 +18,7 @@ import com.groom.orbit.job.dao.jpa.entity.Job;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "member")
 @Table(name = "member")
@@ -49,7 +50,8 @@ public class Member {
   @Column(name = "is_profile")
   private Boolean isProfile = false;
 
-  @Column(name = "ai_feedback")
+  @Setter
+  @Column(name = "ai_feedback", length = 50000)
   private String aiFeedback = "";
 
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
