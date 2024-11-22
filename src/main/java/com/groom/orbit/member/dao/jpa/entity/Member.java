@@ -49,6 +49,9 @@ public class Member {
   @Column(name = "is_profile")
   private Boolean isProfile = false;
 
+  @Column(name = "ai_feedback")
+  private String aiFeedback = "";
+
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<InterestJob> interestJobs = new ArrayList<>();
 
