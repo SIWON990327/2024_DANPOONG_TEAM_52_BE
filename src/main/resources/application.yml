@@ -29,3 +29,6 @@ oauth:
     url:
       auth: https://kauth.kakao.com
       api: https://kapi.kakao.com
+---
+openai:
+  api-key: ${OPENAI_API_KEY}
