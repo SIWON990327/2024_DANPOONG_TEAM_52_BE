@@ -44,4 +44,8 @@ public class QuestQueryService {
   public int getQuestCountsByGoalId(Long goalId) {
     return questRepository.getCountByGoalId(goalId);
   }
+
+  public List<Quest> findByQuestIdIn(List<Long> questIds) {
+    return questRepository.findByQuestIdIn(questIds);
+  }
 }
