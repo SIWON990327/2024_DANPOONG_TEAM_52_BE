@@ -12,13 +12,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.groom.orbit.common.dao.entity.BaseTimeEntity;
+import com.groom.orbit.common.exception.CommonException;
+import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.member.dao.jpa.entity.Member;
 
 import lombok.Getter;
 
 @Entity
 @Getter
+@DynamicUpdate
 @Table(name = "quest")
 public class Quest extends BaseTimeEntity {
 
@@ -56,5 +61,12 @@ public class Quest extends BaseTimeEntity {
     quest.deadline = deadline;
 
     return quest;
+  }
+
+  public void decreaseSequence() {
+    this.sequence -= 1;
+    if (this.sequence <= 0) {
+      throw new CommonException(ErrorCode.INVALID_STATE);
+    }
   }
 }

@@ -12,16 +12,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.groom.orbit.job.dao.jpa.entity.InterestJob;
 import com.groom.orbit.job.dao.jpa.entity.Job;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "member")
 @Table(name = "member")
 @Getter
+@EqualsAndHashCode(of = {"id"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
@@ -34,7 +38,8 @@ public class Member {
   @Column(name = "nickname", length = 100)
   private String nickname;
 
-  @Column(name = "image_url")
+  @ColumnDefault("''")
+  @Column(name = "image_url", length = 500)
   private String imageUrl = "";
 
   @Column(name = "known_prompt", length = 1000)

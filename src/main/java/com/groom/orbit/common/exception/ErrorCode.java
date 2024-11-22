@@ -19,6 +19,7 @@ public enum ErrorCode {
   NOT_FOUND_MEMBER(40402, HttpStatus.NOT_FOUND, "해당 사용자가 존재하지 않습니다."),
   NOT_FOUND_RESUME(40403, HttpStatus.BAD_REQUEST, "해당 이력이 존재하지 않습니다."),
   NOT_FOUND_GOAL(40404, HttpStatus.NOT_FOUND, "해당 목표가 존재하지 않습니다."),
+  NOT_FOUND_QUEST(40405, HttpStatus.NOT_FOUND, "해당 퀘스트가 존재하지 않습니다."),
 
   // Invalid Argument Error
   MISSING_REQUEST_PARAMETER(40000, HttpStatus.BAD_REQUEST, "필수 요청 파라미터가 누락되었습니다."),
@@ -52,7 +53,8 @@ public enum ErrorCode {
 
   // Internal Server Error
   INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다."),
-  UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다.");
+  UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다."),
+  INVALID_STATE(50002, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다.");
 
   private final Integer code;
   private final HttpStatus httpStatus;

@@ -18,6 +18,10 @@ public class QuestQueryService {
 
   private final QuestRepository questRepository;
 
+  public List<Quest> findQuestsByMemberAndGoal(Long memberId, Long goalId) {
+    return questRepository.findByMemberIdAndGoalId(memberId, goalId);
+  }
+
   public List<QuestInfoResponseDto> findQuestsByGoalId(Long memberId, Long goalId) {
     List<Quest> quests = questRepository.findByMemberIdAndGoalId(memberId, goalId);
 
