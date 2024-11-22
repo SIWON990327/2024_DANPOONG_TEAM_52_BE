@@ -22,4 +22,9 @@ public interface QuestRepository extends JpaRepository<Quest, Long> {
   int getCountByGoalId(@Param("goal_id") Long goalId);
 
   List<Quest> findByQuestIdIn(List<Long> ids);
+
+  long countByGoal_GoalId(Long goalId);
+
+  @Query("select count(*) from Quest q" + " where q.goal.goalId=:goal_id and q.isComplete=true")
+  long countCompletedByGoal_GoalId(@Param("goal_id") Long goalId);
 }

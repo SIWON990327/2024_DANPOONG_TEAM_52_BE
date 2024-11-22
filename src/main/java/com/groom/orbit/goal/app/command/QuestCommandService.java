@@ -1,4 +1,4 @@
-package com.groom.orbit.goal.app;
+package com.groom.orbit.goal.app.command;
 
 import java.util.List;
 
@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
-import com.groom.orbit.goal.app.dto.CreateQuestRequestDto;
+import com.groom.orbit.goal.app.MemberGoalService;
+import com.groom.orbit.goal.app.dto.request.CreateQuestRequestDto;
+import com.groom.orbit.goal.app.query.QuestQueryService;
 import com.groom.orbit.goal.dao.QuestRepository;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
 import com.groom.orbit.goal.dao.entity.Quest;
