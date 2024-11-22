@@ -5,6 +5,7 @@ import java.util.Date;
 import jakarta.persistence.*;
 
 import com.groom.orbit.member.dao.jpa.entity.Member;
+import com.groom.orbit.schedule.app.dto.ScheduleRequestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,4 +34,10 @@ public class Schedule {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
+
+  public void updateSchedule(ScheduleRequestDto requestDto) {
+    this.content = requestDto.content();
+    this.startDate = requestDto.startDate();
+    this.endDate = requestDto.endDate();
+  }
 }

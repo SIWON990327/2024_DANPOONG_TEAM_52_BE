@@ -1,9 +1,6 @@
 package com.groom.orbit.schedule.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.CommonSuccessDto;
@@ -22,7 +19,15 @@ public class ScheduleCommandController {
 
   @PostMapping
   public ResponseDto<CommonSuccessDto> createSchedule(
-      @AuthMember Long member, @RequestBody ScheduleRequestDto scheduleRequestDto) {
-    return ResponseDto.ok(scheduleCommandService.createSchedule(member, scheduleRequestDto));
+      @AuthMember Long memberId, @RequestBody ScheduleRequestDto scheduleRequestDto) {
+    return ResponseDto.ok(scheduleCommandService.createSchedule(memberId, scheduleRequestDto));
+  }
+
+  @PatchMapping("/{scheduleId}")
+  public ResponseDto<CommonSuccessDto> updateSchedule(
+      @AuthMember Long memberId,
+      @PathVariable Long scheduleId,
+      @RequestBody ScheduleRequestDto scheduleRequestDto) {
+    return ResponseDto.ok(scheduleCommandService.updateSchedule(scheduleId, scheduleRequestDto));
   }
 }
