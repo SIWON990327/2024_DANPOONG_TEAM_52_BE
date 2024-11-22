@@ -56,7 +56,7 @@ public class Member {
   private Boolean isProfile = false;
 
   @Setter
-  @Column(name = "ai_feedback", length = 50000)
+  @Column(name = "ai_feedback", length = 50000, columnDefinition = "TEXT")
   private String aiFeedback = "";
 
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)

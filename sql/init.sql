@@ -20,7 +20,8 @@ CREATE TABLE member
     known_prompt    VARCHAR(1000) NOT NULL DEFAULT '',
     help_prompt     VARCHAR(1000) NOT NULL DEFAULT '',
     is_notification BOOLEAN       NOT NULL DEFAULT FALSE,
-    is_profile      BOOLEAN       NOT NULL DEFAULT FALSE
+    is_profile      BOOLEAN       NOT NULL DEFAULT FALSE,
+    ai_feedback     TEXT
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
@@ -77,14 +78,14 @@ CREATE TABLE member_goal
 
 CREATE TABLE quest
 (
-    quest_id             BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    title                VARCHAR(50) NOT NULL,
-    is_complete          BOOLEAN     NOT NULL DEFAULT FALSE,
-    created_at           DATETIME    NOT NULL,
-    deadline             DATE        NOT NULL,
-    sequence             INT         NOT NULL,
-    member_id            BIGINT      NOT NULL,
-    goal_id              BIGINT      NOT NULL,
+    quest_id    BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title       VARCHAR(50) NOT NULL,
+    is_complete BOOLEAN     NOT NULL DEFAULT FALSE,
+    created_at  DATETIME    NOT NULL,
+    deadline    DATE        NOT NULL,
+    sequence    INT         NOT NULL,
+    member_id   BIGINT      NOT NULL,
+    goal_id     BIGINT      NOT NULL,
     CONSTRAINT quest_member FOREIGN KEY (member_id, goal_id) REFERENCES member_goal (member_id, goal_id)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
