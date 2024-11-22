@@ -30,4 +30,10 @@ public class ScheduleCommandController {
       @RequestBody ScheduleRequestDto scheduleRequestDto) {
     return ResponseDto.ok(scheduleCommandService.updateSchedule(scheduleId, scheduleRequestDto));
   }
+
+  @DeleteMapping("/{scheduleId}")
+  public ResponseDto<CommonSuccessDto> deleteSchedule(
+      @AuthMember Long memberId, @PathVariable Long scheduleId) {
+    return ResponseDto.ok(scheduleCommandService.deleteSchedule(scheduleId));
+  }
 }
