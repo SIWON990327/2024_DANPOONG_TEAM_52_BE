@@ -9,6 +9,7 @@ import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.goal.app.dto.GetCompletedGoalResponseDto;
 import com.groom.orbit.goal.app.dto.GetOnGoingGoalResponseDto;
+import com.groom.orbit.goal.app.query.QuestQueryService;
 import com.groom.orbit.goal.dao.MemberGoalRepository;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
 import com.groom.orbit.goal.dao.entity.MemberGoalId;

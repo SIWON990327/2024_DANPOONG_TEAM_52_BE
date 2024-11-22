@@ -1,4 +1,4 @@
-package com.groom.orbit.goal.app;
+package com.groom.orbit.goal.app.query;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

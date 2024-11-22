@@ -1,4 +1,4 @@
-package com.groom.orbit.goal.controller;
+package com.groom.orbit.goal.controller.query;
 
 import java.util.List;
 

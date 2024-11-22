@@ -1,4 +1,4 @@
-package com.groom.orbit.goal.app;
+package com.groom.orbit.goal.app.command;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,6 +11,7 @@ import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.goal.app.dto.UpdateQuestRequestDto;
 import com.groom.orbit.goal.app.dto.UpdateQuestSequenceRequestDto;
+import com.groom.orbit.goal.app.query.QuestQueryService;
 import com.groom.orbit.goal.dao.entity.Quest;
 
 import lombok.RequiredArgsConstructor;
