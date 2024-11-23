@@ -53,12 +53,10 @@ public class MemberGoalService {
     List<MemberGoal> memberGoals = memberGoalRepository.findByIsComplete(memberId, true);
     return memberGoals.stream()
         .map(
-            memberGoal -> {
-              List<Quest> quests =
-                  questQueryService.findQuestsByMemberAndGoal(memberId, memberGoal.getGoalId());
-              return new GetCompletedGoalResponseDto(
-                  memberGoal.getTitle(), quests.stream().map(Quest::getTitle).toList());
-            })
+            memberGoal ->
+                new GetCompletedGoalResponseDto(
+                    memberGoal.getTitle(),
+                    memberGoal.getQuests().stream().map(Quest::getTitle).toList()))
         .toList();
   }
 }

@@ -50,10 +50,10 @@ public class QuestQueryService {
   }
 
   public long getTotalQuestCount(Long goalId) {
-    return questRepository.countByGoal_GoalId(goalId);
+    return questRepository.countByMemberGoal_GoalId(goalId);
   }
 
   public long getFinishQuestCount(Long goalId) {
-    return questRepository.countCompletedByGoal_GoalId(goalId);
+    return questRepository.countCompletedByMemberGoal_GoalId(goalId);
   }
 }
