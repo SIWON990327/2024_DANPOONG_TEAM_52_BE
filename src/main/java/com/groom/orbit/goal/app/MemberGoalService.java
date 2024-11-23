@@ -5,14 +5,15 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.goal.app.dto.response.GetCompletedGoalResponseDto;
 import com.groom.orbit.goal.app.dto.response.GetOnGoingGoalResponseDto;
 import com.groom.orbit.goal.app.query.QuestQueryService;
 import com.groom.orbit.goal.dao.MemberGoalRepository;
+import com.groom.orbit.goal.dao.entity.Goal;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
-import com.groom.orbit.goal.dao.entity.MemberGoalId;
 import com.groom.orbit.goal.dao.entity.Quest;
 
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,9 @@ public class MemberGoalService {
 
   @Transactional(readOnly = true)
   public MemberGoal findMemberGoal(Long memberId, Long goalId) {
-    MemberGoalId memberGoalId = MemberGoalId.create(memberId, goalId);
 
     return memberGoalRepository
-        .findById(memberGoalId.getMemberId(), memberGoalId.getGoalId())
+        .findById(memberId, goalId)
         .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_GOAL));
   }
 
@@ -58,5 +58,15 @@ public class MemberGoalService {
                     memberGoal.getTitle(),
                     memberGoal.getQuests().stream().map(Quest::getTitle).toList()))
         .toList();
+  }
+
+  public CommonSuccessDto deleteGoal(Long memberId, Long goalId) {
+    MemberGoal memberGoal = findMemberGoal(memberId, goalId);
+    Goal goal = memberGoal.getGoal();
+    goal.decreaseCount();
+
+    memberGoalRepository.delete(memberGoal);
+
+    return new CommonSuccessDto(true);
   }
 }
