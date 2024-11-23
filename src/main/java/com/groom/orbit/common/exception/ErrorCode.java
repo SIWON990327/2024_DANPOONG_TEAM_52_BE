@@ -35,6 +35,7 @@ public enum ErrorCode {
   SEARCH_SHORT_LENGTH_ERROR(40007, HttpStatus.BAD_REQUEST, "검색어는 2글자 이상이어야 합니다."),
   INVALID_ACCESS_URL(40008, HttpStatus.BAD_REQUEST, "잘못된 사용자 접근입니다."),
   INVALID_FILE(40009, HttpStatus.BAD_REQUEST, "잘못된 파일입니다."),
+  ALREADY_EXISTS_GOAL(40010, HttpStatus.BAD_REQUEST, "이미 목표가 존재합니다."),
 
   // Gone Error
   GONE_SHARED_URL(41001, HttpStatus.GONE, "해당 공유 URL이 만료되었습니다."),
