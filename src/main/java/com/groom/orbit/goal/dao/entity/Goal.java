@@ -29,7 +29,7 @@ public class Goal {
   @Column(nullable = false, length = 50)
   private String title;
 
-  @Column(nullable = false, length = 10)
+  @Column(nullable = false, length = 50)
   @Enumerated(EnumType.STRING)
   private GoalCategory category;
 
