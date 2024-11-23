@@ -23,6 +23,7 @@ public enum ErrorCode {
   NOT_FOUND_S3(40406, HttpStatus.NOT_FOUND, "해당 파일을 찾을 수 없습니다."),
   NOT_FOUND_QUEST(40407, HttpStatus.NOT_FOUND, "해당 퀘스트가 존재하지 않습니다."),
   NOT_FOUND_GOAL_CATEGORY(40408, HttpStatus.NOT_FOUND, "해당 목표 카테고리가 존재하지 않습니다."),
+  NOT_FOUND_MEMBER_GOAL(40409, HttpStatus.NOT_FOUND, "해당 사용자 목표가 존재하지 않습니다."),
 
   // Invalid Argument Error
   MISSING_REQUEST_PARAMETER(40000, HttpStatus.BAD_REQUEST, "필수 요청 파라미터가 누락되었습니다."),
