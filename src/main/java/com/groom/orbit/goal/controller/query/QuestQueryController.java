@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.ResponseDto;
-import com.groom.orbit.goal.app.dto.response.QuestInfoResponseDto;
+import com.groom.orbit.goal.app.dto.response.GetQuestResponseDto;
 import com.groom.orbit.goal.app.query.QuestQueryService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class QuestQueryController {
 
   /** TODO add annotation */
   @GetMapping
-  public ResponseDto<List<QuestInfoResponseDto>> findQuest(
+  public ResponseDto<List<GetQuestResponseDto>> findQuest(
       @AuthMember Long memberId, @RequestParam("goal_id") Long goalId) {
     return ResponseDto.ok(questQueryService.findQuestsByGoalId(memberId, goalId));
   }

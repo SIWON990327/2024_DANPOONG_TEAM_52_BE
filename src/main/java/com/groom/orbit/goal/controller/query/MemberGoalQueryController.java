@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.goal.app.MemberGoalService;
 import com.groom.orbit.goal.app.dto.response.GetCompletedGoalResponseDto;
+import com.groom.orbit.goal.app.dto.response.GetMemberGoalResponseDto;
 import com.groom.orbit.goal.app.dto.response.GetOnGoingGoalResponseDto;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,12 @@ import lombok.RequiredArgsConstructor;
 public class MemberGoalQueryController {
 
   private final MemberGoalService memberGoalService;
+
+  @GetMapping
+  public ResponseDto<List<GetMemberGoalResponseDto>> getGoals(
+      @AuthMember Long memberId, @RequestParam("is_complete") Boolean isComplete) {
+    return ResponseDto.ok(memberGoalService.findGoals(memberId, isComplete));
+  }
 
   @GetMapping("/on-going")
   public ResponseDto<List<GetOnGoingGoalResponseDto>> getOnGoingGoals(@AuthMember Long memberId) {

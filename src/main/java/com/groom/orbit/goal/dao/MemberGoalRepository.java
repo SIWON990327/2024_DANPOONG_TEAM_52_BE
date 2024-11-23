@@ -35,8 +35,10 @@ public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
   Optional<MemberGoal> findByMemberIdAndGoalId(
       @Param("member_id") Long memberId, @Param("goal_id") Long goalId);
 
-  //  @Modifying
-  //  @Query("UPDATE MemberGoal mg SET mg.goal.goalId = :goalId WHERE mg.memberGoalId =
-  // :memberGoalId")
-  //  void updateGoalId(Long goalId);
+  @Query(
+      "select mg from MemberGoal mg"
+          + " join fetch mg.member m"
+          + " where m.id=:member_id and mg.isComplete=:is_complete")
+  List<MemberGoal> findByMemberIdAndIsComplete(
+      @Param("member_id") Long memberId, @Param("is_complete") Boolean isComplete);
 }
