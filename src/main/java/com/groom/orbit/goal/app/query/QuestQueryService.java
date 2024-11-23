@@ -36,8 +36,12 @@ public class QuestQueryService {
     return questRepository.findByMemberIdAndGoalId(memberId, goalId);
   }
 
-  public List<GetQuestResponseDto> findQuestsByGoalId(Long memberId, Long goalId) {
-    List<Quest> quests = findQuestsByMemberAndGoal(memberId, goalId);
+  public List<Quest> findQuestsByMemberAndGoal(Long memberGoalId) {
+    return questRepository.findByMemberGoalId(memberGoalId);
+  }
+
+  public List<GetQuestResponseDto> findQuestsByGoalId(Long memberGoalId) {
+    List<Quest> quests = findQuestsByMemberAndGoal(memberGoalId);
 
     return quests.stream()
         .map(
