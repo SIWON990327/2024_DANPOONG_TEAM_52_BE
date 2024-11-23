@@ -18,6 +18,7 @@ import com.groom.orbit.goal.app.query.GoalQueryService;
 import com.groom.orbit.goal.dao.MemberGoalRepository;
 import com.groom.orbit.goal.dao.entity.Goal;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
+import com.groom.orbit.goal.dao.entity.Quest;
 import com.groom.orbit.member.app.MemberQueryService;
 import com.groom.orbit.member.dao.jpa.entity.Member;
 
@@ -135,5 +136,19 @@ public class MemberGoalService {
 
   public List<MemberGoal> findMemberGoalsByGoalId(Long goalId) {
     return memberGoalRepository.findAllByGoalId(goalId);
+  }
+
+  public GetMemberGoalResponseDto findGoal(Long memberGoalId) {
+    MemberGoal memberGoal = findMemberGoal(memberGoalId);
+    List<Quest> quests = memberGoal.getQuests();
+    List<GetQuestResponseDto> questDtos =
+        quests.stream()
+            .map(
+                quest ->
+                    new GetQuestResponseDto(
+                        quest.getQuestId(), quest.getTitle(), quest.getIsComplete()))
+            .toList();
+    return new GetMemberGoalResponseDto(
+        memberGoal.getMemberGoalId(), memberGoal.getTitle(), questDtos);
   }
 }
