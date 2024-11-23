@@ -27,4 +27,9 @@ public class QuestQueryController {
       @AuthMember Long memberId, @RequestParam("goal_id") Long goalId) {
     return ResponseDto.ok(questQueryService.findQuestsByGoalId(memberId, goalId));
   }
+
+  @GetMapping("/recommend")
+  public ResponseDto<?> getRecommendedQuests(@RequestParam("member_goal_id") Long memberGoalId) {
+    return ResponseDto.ok(questQueryService.getRecommendedQuests(memberGoalId));
+  }
 }
