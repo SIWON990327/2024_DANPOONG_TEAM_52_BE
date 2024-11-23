@@ -3,7 +3,11 @@ package com.groom.orbit.goal.app.query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.orbit.common.exception.CommonException;
+import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.goal.app.dto.response.GetGoalCategoryResponseDto;
+import com.groom.orbit.goal.dao.GoalRepository;
+import com.groom.orbit.goal.dao.entity.Goal;
 import com.groom.orbit.goal.dao.entity.GoalCategory;
 
 import lombok.RequiredArgsConstructor;
@@ -12,6 +16,14 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GoalQueryService {
+
+  private final GoalRepository goalRepository;
+
+  public Goal findGoal(Long goalId) {
+    return goalRepository
+        .findById(goalId)
+        .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_GOAL));
+  }
 
   public GetGoalCategoryResponseDto getGoalCategory() {
     return new GetGoalCategoryResponseDto(GoalCategory.getAll());
