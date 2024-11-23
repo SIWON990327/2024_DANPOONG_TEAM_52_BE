@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
-import com.groom.orbit.goal.app.dto.response.QuestInfoResponseDto;
+import com.groom.orbit.goal.app.dto.response.GetQuestResponseDto;
 import com.groom.orbit.goal.dao.QuestRepository;
 import com.groom.orbit.goal.dao.entity.Quest;
 
@@ -30,13 +30,13 @@ public class QuestQueryService {
     return questRepository.findByMemberIdAndGoalId(memberId, goalId);
   }
 
-  public List<QuestInfoResponseDto> findQuestsByGoalId(Long memberId, Long goalId) {
+  public List<GetQuestResponseDto> findQuestsByGoalId(Long memberId, Long goalId) {
     List<Quest> quests = findQuestsByMemberAndGoal(memberId, goalId);
 
     return quests.stream()
         .map(
             quest ->
-                new QuestInfoResponseDto(
+                new GetQuestResponseDto(
                     quest.getQuestId(), quest.getTitle(), quest.getIsComplete()))
         .toList();
   }

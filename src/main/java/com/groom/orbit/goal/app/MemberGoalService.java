@@ -12,7 +12,9 @@ import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.goal.app.command.GoalCommandService;
 import com.groom.orbit.goal.app.dto.request.MemberGoalRequestDto;
 import com.groom.orbit.goal.app.dto.response.GetCompletedGoalResponseDto;
+import com.groom.orbit.goal.app.dto.response.GetMemberGoalResponseDto;
 import com.groom.orbit.goal.app.dto.response.GetOnGoingGoalResponseDto;
+import com.groom.orbit.goal.app.dto.response.GetQuestResponseDto;
 import com.groom.orbit.goal.app.query.GoalQueryService;
 import com.groom.orbit.goal.app.query.QuestQueryService;
 import com.groom.orbit.goal.dao.MemberGoalRepository;
@@ -99,7 +101,6 @@ public class MemberGoalService {
     validateMemberGoal(memberId, goal.getGoalId());
     memberGoal.updateGoal(goal);
 
-    //    memberGoalRepository.updateGoalId(goal.getGoalId());
     return new CommonSuccessDto(true);
   }
 
@@ -111,6 +112,25 @@ public class MemberGoalService {
 
   private Goal getGoal(String title, String category) {
     Optional<Goal> findGoal = goalQueryService.findGoalByTitleAndCategory(title, category);
+
     return findGoal.orElseGet(() -> goalCommandService.createGoal(title, category));
+  }
+
+  public List<GetMemberGoalResponseDto> findGoals(Long memberId, Boolean isComplete) {
+    List<MemberGoal> memberGoals =
+        memberGoalRepository.findByMemberIdAndIsComplete(memberId, isComplete);
+
+    return memberGoals.stream()
+        .map(
+            mg ->
+                new GetMemberGoalResponseDto(
+                    mg.getMemberGoalId(), mg.getTitle(), getGetQuestResponseDtos(mg)))
+        .toList();
+  }
+
+  private static List<GetQuestResponseDto> getGetQuestResponseDtos(MemberGoal mg) {
+    return mg.getQuests().stream()
+        .map(q -> new GetQuestResponseDto(q.getQuestId(), q.getTitle(), q.getIsComplete()))
+        .toList();
   }
 }
