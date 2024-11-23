@@ -4,10 +4,10 @@ USE orbit;
 
 DROP TABLE IF EXISTS interest_job;
 DROP TABLE IF EXISTS resume;
-DROP TABLE IF EXISTS member_goal;
 DROP TABLE IF EXISTS quest;
-DROP TABLE IF EXISTS schedule;
+DROP TABLE IF EXISTS member_goal;
 DROP TABLE IF EXISTS goal;
+DROP TABLE IF EXISTS schedule;
 DROP TABLE IF EXISTS job;
 DROP TABLE IF EXISTS member;
 
@@ -16,6 +16,7 @@ CREATE TABLE member
 (
     member_id       BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nickname        VARCHAR(100)  NOT NULL,
+    kakao_nickname        VARCHAR(100)  NOT NULL,
     image_url       VARCHAR(500)  NOT NULL,
     known_prompt    VARCHAR(1000) NOT NULL DEFAULT '',
     help_prompt     VARCHAR(1000) NOT NULL DEFAULT '',
@@ -48,7 +49,7 @@ CREATE TABLE resume
 (
     resume_id  BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title      VARCHAR(50) NOT NULL,
-    category   VARCHAR(10) NOT NULL,
+    category   VARCHAR(50) NOT NULL,
     content    VARCHAR(50) NOT NULL,
     start_date DATE,
     end_date   DATE,
@@ -61,7 +62,7 @@ CREATE TABLE goal
 (
     goal_id  BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title    VARCHAR(50) NOT NULL,
-    category VARCHAR(10) NOT NULL,
+    category VARCHAR(50) NOT NULL,
     count    INT         NOT NULL DEFAULT 0
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -70,6 +71,7 @@ CREATE TABLE member_goal
 (
     member_goal_id BIGINT  NOT NULL AUTO_INCREMENT PRIMARY KEY,
     member_id      BIGINT  NOT NULL,
+    created_at  DATETIME    NOT NULL,
     goal_id        BIGINT  NOT NULL,
     is_complete    BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT member_goal_member FOREIGN KEY (member_id) REFERENCES member (member_id),
