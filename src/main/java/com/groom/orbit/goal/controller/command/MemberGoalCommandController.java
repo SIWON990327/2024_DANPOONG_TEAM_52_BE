@@ -28,11 +28,9 @@ public class MemberGoalCommandController {
     return ResponseDto.ok(memberGoalService.deleteGoal(memberId, goalId));
   }
 
-  @PutMapping("/{goal_id}")
+  @PutMapping
   public ResponseDto<CommonSuccessDto> createMemberGoal(
-      @AuthMember Long memberId,
-      @PathVariable("goal_id") Long goalId,
-      @RequestBody CreateMemberGoalRequestDto dto) {
-    return ResponseDto.created(memberGoalService.createGoal(memberId, goalId, dto));
+      @AuthMember Long memberId, @RequestBody CreateMemberGoalRequestDto dto) {
+    return ResponseDto.created(memberGoalService.createGoal(memberId, dto));
   }
 }

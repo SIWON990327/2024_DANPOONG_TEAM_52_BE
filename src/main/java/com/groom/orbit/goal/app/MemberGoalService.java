@@ -1,6 +1,7 @@
 package com.groom.orbit.goal.app;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
+import com.groom.orbit.goal.app.command.GoalCommandService;
 import com.groom.orbit.goal.app.dto.request.CreateMemberGoalRequestDto;
 import com.groom.orbit.goal.app.dto.response.GetCompletedGoalResponseDto;
 import com.groom.orbit.goal.app.dto.response.GetOnGoingGoalResponseDto;
@@ -31,6 +33,7 @@ public class MemberGoalService {
   private final QuestQueryService questQueryService;
   private final MemberQueryService memberQueryService;
   private final GoalQueryService goalQueryService;
+  private final GoalCommandService goalCommandService;
 
   @Transactional(readOnly = true)
   public MemberGoal findMemberGoal(Long memberId, Long goalId) {
@@ -78,10 +81,11 @@ public class MemberGoalService {
     return new CommonSuccessDto(true);
   }
 
-  public CommonSuccessDto createGoal(Long memberId, Long goalId, CreateMemberGoalRequestDto dto) {
+  public CommonSuccessDto createGoal(Long memberId, CreateMemberGoalRequestDto dto) {
     Member member = memberQueryService.findMember(memberId);
-    Goal goal = goalQueryService.findGoal(goalId);
-
+    Optional<Goal> findGoal = goalQueryService.findGoalByTitle(dto.title(), dto.category());
+    Goal goal =
+        findGoal.orElseGet(() -> goalCommandService.createGoal(dto.title(), dto.category()));
     MemberGoal memberGoal = MemberGoal.create(member, goal);
     goal.increaseCount();
     memberGoalRepository.save(memberGoal);

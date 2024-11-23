@@ -35,7 +35,7 @@ public class Goal {
 
   @ColumnDefault("0")
   @Column(nullable = false)
-  private Integer count;
+  private Integer count = 0;
 
   public static Goal create(String title, String category) {
     Goal goal = new Goal();

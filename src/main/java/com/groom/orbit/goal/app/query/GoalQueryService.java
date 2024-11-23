@@ -1,5 +1,7 @@
 package com.groom.orbit.goal.app.query;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,11 @@ public class GoalQueryService {
     return goalRepository
         .findById(goalId)
         .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_GOAL));
+  }
+
+  public Optional<Goal> findGoalByTitle(String title, String category) {
+
+    return goalRepository.findByTitleAndCategory(title, GoalCategory.from(category));
   }
 
   public GetGoalCategoryResponseDto getGoalCategory() {

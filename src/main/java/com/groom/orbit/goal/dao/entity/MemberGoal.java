@@ -44,7 +44,7 @@ public class MemberGoal {
 
   @ColumnDefault("false")
   @Column(nullable = false)
-  private Boolean isComplete;
+  private Boolean isComplete = false;
 
   @OneToMany(mappedBy = "memberGoal", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Quest> quests = new ArrayList<>();
@@ -53,6 +53,8 @@ public class MemberGoal {
     MemberGoal memberGoal = new MemberGoal();
     memberGoal.member = member;
     memberGoal.goal = goal;
+    memberGoal.memberId = member.getId();
+    memberGoal.goalId = goal.getGoalId();
 
     return memberGoal;
   }
