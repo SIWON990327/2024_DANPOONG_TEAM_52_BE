@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.groom.orbit.common.dao.entity.BaseTimeEntity;
 import com.groom.orbit.member.dao.jpa.entity.Member;
 
 import lombok.Getter;
@@ -26,7 +27,7 @@ import lombok.Getter;
 @Getter
 @DynamicUpdate
 @Table(name = "member_goal")
-public class MemberGoal {
+public class MemberGoal extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +35,7 @@ public class MemberGoal {
   private Long memberGoalId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "member_id", insertable = false, updatable = false)
+  @JoinColumn(name = "member_id")
   private Member member;
 
   @ManyToOne(fetch = FetchType.LAZY)
