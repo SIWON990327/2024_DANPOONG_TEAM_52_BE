@@ -10,7 +10,7 @@ import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.goal.app.command.GoalCommandService;
-import com.groom.orbit.goal.app.dto.request.CreateMemberGoalRequestDto;
+import com.groom.orbit.goal.app.dto.request.MemberGoalRequestDto;
 import com.groom.orbit.goal.app.dto.response.GetCompletedGoalResponseDto;
 import com.groom.orbit.goal.app.dto.response.GetOnGoingGoalResponseDto;
 import com.groom.orbit.goal.app.query.GoalQueryService;
@@ -49,12 +49,12 @@ public class MemberGoalService {
     return memberGoals.stream()
         .map(
             memberGoal -> {
-              Long goalId = memberGoal.getGoalId();
+              Long goalId = memberGoal.getGoal().getGoalId();
               long totalQuestCount = questQueryService.getTotalQuestCount(goalId);
               long finishQuestCount = questQueryService.getFinishQuestCount(goalId);
 
               return new GetOnGoingGoalResponseDto(
-                  memberGoal.getGoalId(), memberGoal.getTitle(), totalQuestCount, finishQuestCount);
+                  goalId, memberGoal.getTitle(), totalQuestCount, finishQuestCount);
             })
         .toList();
   }
@@ -81,15 +81,36 @@ public class MemberGoalService {
     return new CommonSuccessDto(true);
   }
 
-  public CommonSuccessDto createGoal(Long memberId, CreateMemberGoalRequestDto dto) {
+  public CommonSuccessDto createGoal(Long memberId, MemberGoalRequestDto dto) {
     Member member = memberQueryService.findMember(memberId);
-    Optional<Goal> findGoal = goalQueryService.findGoalByTitle(dto.title(), dto.category());
-    Goal goal =
-        findGoal.orElseGet(() -> goalCommandService.createGoal(dto.title(), dto.category()));
+    Goal goal = getGoal(dto.title(), dto.category());
     MemberGoal memberGoal = MemberGoal.create(member, goal);
     goal.increaseCount();
+
     memberGoalRepository.save(memberGoal);
 
     return new CommonSuccessDto(true);
+  }
+
+  public CommonSuccessDto updateGoal(Long memberId, Long goalId, MemberGoalRequestDto dto) {
+    MemberGoal memberGoal = findMemberGoal(memberId, goalId);
+    Goal goal = getGoal(dto.title(), dto.category());
+
+    validateMemberGoal(memberId, goal.getGoalId());
+    memberGoal.updateGoal(goal);
+
+    //    memberGoalRepository.updateGoalId(goal.getGoalId());
+    return new CommonSuccessDto(true);
+  }
+
+  private void validateMemberGoal(Long memberId, Long goalId) {
+    if (memberGoalRepository.findByMemberIdAndGoalId(memberId, goalId).isPresent()) {
+      throw new CommonException(ErrorCode.ALREADY_EXISTS_GOAL);
+    }
+  }
+
+  private Goal getGoal(String title, String category) {
+    Optional<Goal> findGoal = goalQueryService.findGoalByTitleAndCategory(title, category);
+    return findGoal.orElseGet(() -> goalCommandService.createGoal(title, category));
   }
 }

@@ -27,7 +27,7 @@ public class GoalQueryService {
         .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_GOAL));
   }
 
-  public Optional<Goal> findGoalByTitle(String title, String category) {
+  public Optional<Goal> findGoalByTitleAndCategory(String title, String category) {
 
     return goalRepository.findByTitleAndCategory(title, GoalCategory.from(category));
   }

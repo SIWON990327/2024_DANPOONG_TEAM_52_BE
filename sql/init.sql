@@ -47,7 +47,7 @@ CREATE TABLE interest_job
 CREATE TABLE resume
 (
     resume_id  BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(50) NOT NULL,
+    title      VARCHAR(50) NOT NULL,
     category   VARCHAR(10) NOT NULL,
     content    VARCHAR(50) NOT NULL,
     start_date DATE,
@@ -68,10 +68,10 @@ CREATE TABLE goal
 
 CREATE TABLE member_goal
 (
-    member_id   BIGINT  NOT NULL,
-    goal_id     BIGINT  NOT NULL,
-    is_complete BOOLEAN NOT NULL DEFAULT FALSE,
-    PRIMARY KEY (member_id, goal_id),
+    member_goal_id BIGINT  NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    member_id      BIGINT  NOT NULL,
+    goal_id        BIGINT  NOT NULL,
+    is_complete    BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT member_goal_member FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT member_goal_goal FOREIGN KEY (goal_id) REFERENCES goal (goal_id)
 ) ENGINE = InnoDB
@@ -85,9 +85,8 @@ CREATE TABLE quest
     created_at  DATETIME    NOT NULL,
     deadline    DATE        NOT NULL,
     sequence    INT         NOT NULL,
-    member_id   BIGINT      NOT NULL,
-    goal_id     BIGINT      NOT NULL,
-    CONSTRAINT fk_quest_member_goal FOREIGN KEY (member_id, goal_id) REFERENCES member_goal (member_id, goal_id)
+    member_goal_id   BIGINT      NOT NULL,
+    CONSTRAINT fk_quest_member_goal FOREIGN KEY (member_goal_id) REFERENCES member_goal (member_goal_id)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 

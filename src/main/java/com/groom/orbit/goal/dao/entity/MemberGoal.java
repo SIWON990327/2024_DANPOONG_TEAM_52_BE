@@ -7,14 +7,16 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicUpdate;
 
 import com.groom.orbit.member.dao.jpa.entity.Member;
 
@@ -22,24 +24,21 @@ import lombok.Getter;
 
 @Entity
 @Getter
+@DynamicUpdate
 @Table(name = "member_goal")
-@IdClass(MemberGoalId.class)
 public class MemberGoal {
 
   @Id
-  @Column(name = "member_id") // 필드 명시
-  private Long memberId; // 변경
-
-  @Id
-  @Column(name = "goal_id") // 필드 명시
-  private Long goalId; // 변경
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "member_goal_id")
+  private Long memberGoalId;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "member_id", insertable = false, updatable = false)
   private Member member;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "goal_id", insertable = false, updatable = false)
+  @JoinColumn(name = "goal_id")
   private Goal goal;
 
   @ColumnDefault("false")
@@ -53,13 +52,15 @@ public class MemberGoal {
     MemberGoal memberGoal = new MemberGoal();
     memberGoal.member = member;
     memberGoal.goal = goal;
-    memberGoal.memberId = member.getId();
-    memberGoal.goalId = goal.getGoalId();
 
     return memberGoal;
   }
 
   public String getTitle() {
     return this.goal.getTitle();
+  }
+
+  public void updateGoal(Goal goal) {
+    this.goal = goal;
   }
 }

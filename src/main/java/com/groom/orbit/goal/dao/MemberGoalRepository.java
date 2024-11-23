@@ -8,11 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.groom.orbit.goal.dao.entity.MemberGoal;
-import com.groom.orbit.goal.dao.entity.MemberGoalId;
 
-public interface MemberGoalRepository extends JpaRepository<MemberGoal, MemberGoalId> {
+public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
 
-  @Query("select mg from MemberGoal mg" + " where mg.memberId=:member_id and mg.goalId=:goal_id")
+  @Query(
+      "select mg from MemberGoal mg"
+          + " join fetch mg.member m"
+          + " join fetch mg.goal g"
+          + " where m.id=:member_id and g.goalId=:goal_id")
   Optional<MemberGoal> findById(@Param("member_id") Long memberId, @Param("goal_id") Long goalId);
 
   @Query(
@@ -20,7 +23,20 @@ public interface MemberGoalRepository extends JpaRepository<MemberGoal, MemberGo
           + " join fetch mg.goal g"
           + " join fetch mg.member m"
           + " where mg.isComplete=:is_complete"
-          + " and mg.memberId=:member_id")
+          + " and m=:member_id")
   List<MemberGoal> findByIsComplete(
       @Param("member_id") Long memberId, @Param("is_complete") Boolean isComplete);
+
+  @Query(
+      "select mg from MemberGoal mg"
+          + " join fetch mg.goal g"
+          + " join fetch mg.member m"
+          + " where mg.member.id=:member_id and mg.goal.goalId=:goal_id")
+  Optional<MemberGoal> findByMemberIdAndGoalId(
+      @Param("member_id") Long memberId, @Param("goal_id") Long goalId);
+
+  //  @Modifying
+  //  @Query("UPDATE MemberGoal mg SET mg.goal.goalId = :goalId WHERE mg.memberGoalId =
+  // :memberGoalId")
+  //  void updateGoalId(Long goalId);
 }
