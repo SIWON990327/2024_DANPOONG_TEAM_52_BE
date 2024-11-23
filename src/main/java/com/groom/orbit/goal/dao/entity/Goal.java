@@ -51,4 +51,8 @@ public class Goal {
     }
     count -= 1;
   }
+
+  public void increaseCount() {
+    count += 1;
+  }
 }
