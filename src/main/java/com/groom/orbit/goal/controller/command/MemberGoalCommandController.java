@@ -1,6 +1,7 @@
 package com.groom.orbit.goal.controller.command;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +12,7 @@ import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.goal.app.MemberGoalService;
-import com.groom.orbit.goal.app.dto.request.CreateMemberGoalRequestDto;
+import com.groom.orbit.goal.app.dto.request.MemberGoalRequestDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,11 +29,17 @@ public class MemberGoalCommandController {
     return ResponseDto.ok(memberGoalService.deleteGoal(memberId, goalId));
   }
 
-  @PutMapping("/{goal_id}")
+  @PutMapping
   public ResponseDto<CommonSuccessDto> createMemberGoal(
+      @AuthMember Long memberId, @RequestBody MemberGoalRequestDto dto) {
+    return ResponseDto.created(memberGoalService.createGoal(memberId, dto));
+  }
+
+  @PatchMapping("/{goal_id}")
+  public ResponseDto<CommonSuccessDto> updateMemberGoal(
       @AuthMember Long memberId,
       @PathVariable("goal_id") Long goalId,
-      @RequestBody CreateMemberGoalRequestDto dto) {
-    return ResponseDto.created(memberGoalService.createGoal(memberId, goalId, dto));
+      @RequestBody MemberGoalRequestDto dto) {
+    return ResponseDto.ok(memberGoalService.updateGoal(memberId, goalId, dto));
   }
 }

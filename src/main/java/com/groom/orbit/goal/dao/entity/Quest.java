@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -18,6 +17,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.groom.orbit.common.dao.entity.BaseTimeEntity;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
+import com.groom.orbit.member.dao.jpa.entity.Member;
 
 import lombok.Getter;
 
@@ -44,10 +44,7 @@ public class Quest extends BaseTimeEntity {
   private Integer sequence;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumns({
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id"),
-    @JoinColumn(name = "goal_id", referencedColumnName = "goal_id")
-  })
+  @JoinColumn(name = "member_goal_id")
   private MemberGoal memberGoal;
 
   public static Quest create(
@@ -69,7 +66,8 @@ public class Quest extends BaseTimeEntity {
   }
 
   public void validateMember(Long memberId) {
-    this.memberGoal.getMemberId().equals(memberId);
+    Member member = this.memberGoal.getMember();
+    member.validateId(memberId);
   }
 
   public int compareWithId(Long questId) {
