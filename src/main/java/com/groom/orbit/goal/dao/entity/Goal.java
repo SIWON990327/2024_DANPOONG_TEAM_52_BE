@@ -11,6 +11,9 @@ import jakarta.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.groom.orbit.common.exception.CommonException;
+import com.groom.orbit.common.exception.ErrorCode;
+
 import lombok.Getter;
 
 @Entity
@@ -40,5 +43,12 @@ public class Goal {
     goal.category = GoalCategory.from(category);
 
     return goal;
+  }
+
+  public void decreaseCount() {
+    if (count <= 0) {
+      throw new CommonException(ErrorCode.INVALID_STATE);
+    }
+    count -= 1;
   }
 }
