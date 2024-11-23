@@ -26,17 +26,6 @@ jobs:
           java-version: 21 # (5).자바 설치
           distribution: 'adopt'
 
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-        shell: bash
-
-      - name: Build Docker DB
-        run: ./gradlew bootRun
-        shell: bash
-
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash # (6).권한 부여
@@ -70,8 +59,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_DEV_ACTION_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_DEV_ACTION_SECRET_ACCESS_KEY }}
-          application_name: Orbit-dev
-          environment_name: Orbit-dev-env
+          application_name: Orbit-dev-eb
+          environment_name: Orbit-dev-eb-env
           version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
           region: ap-northeast-2
           deployment_package: Dockerrun.aws.json
