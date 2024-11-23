@@ -47,6 +47,7 @@ CREATE TABLE interest_job
 CREATE TABLE resume
 (
     resume_id  BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,
     category   VARCHAR(10) NOT NULL,
     content    VARCHAR(50) NOT NULL,
     start_date DATE,
@@ -86,7 +87,7 @@ CREATE TABLE quest
     sequence    INT         NOT NULL,
     member_id   BIGINT      NOT NULL,
     goal_id     BIGINT      NOT NULL,
-    CONSTRAINT quest_member FOREIGN KEY (member_id, goal_id) REFERENCES member_goal (member_id, goal_id)
+    CONSTRAINT fk_quest_member_goal FOREIGN KEY (member_id, goal_id) REFERENCES member_goal (member_id, goal_id)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
