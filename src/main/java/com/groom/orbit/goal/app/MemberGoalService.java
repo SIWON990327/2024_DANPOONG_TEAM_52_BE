@@ -52,6 +52,7 @@ public class MemberGoalService {
 
   public CommonSuccessDto deleteMemberGoal(Long memberId, Long memberGoalId) {
     MemberGoal memberGoal = findMemberGoal(memberGoalId);
+    memberGoal.validateMember(memberId);
     Goal goal = memberGoal.getGoal();
 
     goal.decreaseCount();

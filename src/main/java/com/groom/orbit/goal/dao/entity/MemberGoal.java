@@ -64,4 +64,8 @@ public class MemberGoal extends BaseTimeEntity {
   public void updateGoal(Goal goal) {
     this.goal = goal;
   }
+
+  public void validateMember(Long memberId) {
+    this.member.validateId(memberId);
+  }
 }
