@@ -29,20 +29,6 @@ public interface QuestRepository extends JpaRepository<Quest, Long> {
   List<Quest> findByQuestIdIn(List<Long> ids);
 
   @Query(
-      "select count(*) from Quest q"
-          + " join q.memberGoal mg"
-          + " join mg.goal g"
-          + " where g.goalId=:goal_id")
-  long countByMemberGoal_GoalId(@Param("goal_id") Long goalId);
-
-  @Query(
-      "select count(*) from Quest q"
-          + " join q.memberGoal mg"
-          + " join mg.goal g"
-          + " where q.isComplete=true and g.goalId=:goal_id")
-  long countCompletedByMemberGoal_GoalId(@Param("goal_id") Long goalId);
-
-  @Query(
       "SELECT q FROM Quest q join fetch q.memberGoal mg join fetch mg.member m WHERE MONTH(q.deadline) = :month AND m.id = :memberId ORDER BY q.deadline ASC")
   List<Quest> findAllByMonthAndMemberId(Long memberId, Integer month);
 
