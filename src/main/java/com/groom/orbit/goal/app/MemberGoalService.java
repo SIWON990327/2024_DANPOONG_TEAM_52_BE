@@ -50,8 +50,9 @@ public class MemberGoalService {
         .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_GOAL));
   }
 
-  public CommonSuccessDto deleteGoal(Long memberId, Long goalId) {
-    MemberGoal memberGoal = findMemberGoal(memberId, goalId);
+  public CommonSuccessDto deleteMemberGoal(Long memberId, Long memberGoalId) {
+    MemberGoal memberGoal = findMemberGoal(memberGoalId);
+    memberGoal.validateMember(memberId);
     Goal goal = memberGoal.getGoal();
 
     goal.decreaseCount();

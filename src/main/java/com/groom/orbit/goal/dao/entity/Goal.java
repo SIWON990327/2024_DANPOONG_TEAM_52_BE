@@ -47,7 +47,7 @@ public class Goal {
 
   public void decreaseCount() {
     if (count <= 0) {
-      throw new CommonException(ErrorCode.INVALID_STATE);
+      throw new CommonException(ErrorCode.INVALID_GOAL_COUNT_STATE);
     }
     count -= 1;
   }

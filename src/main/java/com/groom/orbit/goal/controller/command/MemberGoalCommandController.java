@@ -20,7 +20,6 @@ import com.groom.orbit.config.openai.GoalRecommendRequestDto;
 import com.groom.orbit.config.openai.GoalRecommendResponseDto;
 import com.groom.orbit.config.openai.OpenAiClient;
 import com.groom.orbit.goal.app.MemberGoalService;
-import com.groom.orbit.goal.app.command.GoalCommandService;
 import com.groom.orbit.goal.app.dto.request.MemberGoalRequestDto;
 import com.groom.orbit.goal.app.dto.response.RecommendGoalResponseDto;
 import com.groom.orbit.goal.dao.GoalRepository;
@@ -36,15 +35,14 @@ import lombok.RequiredArgsConstructor;
 public class MemberGoalCommandController {
 
   private final MemberGoalService memberGoalService;
-  private final GoalCommandService goalCommandService;
   private final MemberQueryService memberQueryService;
   private final OpenAiClient openAiClient;
   private final GoalRepository goalRepository;
 
-  @DeleteMapping("/{goal_id}")
+  @DeleteMapping("/{member_goal_id}")
   public ResponseDto<CommonSuccessDto> deleteMemberGoal(
-      @AuthMember Long memberId, @PathVariable("goal_id") Long goalId) {
-    return ResponseDto.ok(memberGoalService.deleteGoal(memberId, goalId));
+      @AuthMember Long memberId, @PathVariable("member_goal_id") Long memberGoalId) {
+    return ResponseDto.ok(memberGoalService.deleteMemberGoal(memberId, memberGoalId));
   }
 
   @PutMapping
