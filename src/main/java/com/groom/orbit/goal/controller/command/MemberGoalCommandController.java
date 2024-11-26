@@ -50,12 +50,12 @@ public class MemberGoalCommandController {
     return ResponseDto.created(memberGoalService.createGoal(memberId, dto));
   }
 
-  @PatchMapping("/{goal_id}")
+  @PatchMapping("/{member_goal_id}")
   public ResponseDto<CommonSuccessDto> updateMemberGoal(
       @AuthMember Long memberId,
-      @PathVariable("goal_id") Long goalId,
+      @PathVariable("member_goal_id") Long memberGoalId,
       @RequestBody MemberGoalRequestDto dto) {
-    return ResponseDto.ok(memberGoalService.updateGoal(memberId, goalId, dto));
+    return ResponseDto.ok(memberGoalService.updateGoal(memberId, memberGoalId, dto));
   }
 
   @PostMapping("/recommend")
