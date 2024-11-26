@@ -52,9 +52,9 @@ public class MemberGoalService {
 
   public CommonSuccessDto deleteMemberGoal(Long memberId, Long memberGoalId) {
     MemberGoal memberGoal = findMemberGoal(memberGoalId);
+
     memberGoal.validateMember(memberId);
     Goal goal = memberGoal.getGoal();
-
     goal.decreaseCount();
     memberGoalRepository.delete(memberGoal);
 
@@ -64,9 +64,9 @@ public class MemberGoalService {
   public CommonSuccessDto createGoal(Long memberId, MemberGoalRequestDto dto) {
     Member member = memberQueryService.findMember(memberId);
     Goal goal = getGoal(dto.title(), dto.category());
+
     MemberGoal memberGoal = MemberGoal.create(member, goal);
     goal.increaseCount();
-
     memberGoalRepository.save(memberGoal);
 
     return new CommonSuccessDto(true);
@@ -136,6 +136,7 @@ public class MemberGoalService {
   public GetMemberGoalResponseDto findGoal(Long memberGoalId) {
     MemberGoal memberGoal = findMemberGoal(memberGoalId);
     List<Quest> quests = memberGoal.getQuests();
+
     List<GetQuestResponseDto> questDtos =
         quests.stream()
             .map(
@@ -143,6 +144,7 @@ public class MemberGoalService {
                     new GetQuestResponseDto(
                         quest.getQuestId(), quest.getTitle(), quest.getIsComplete()))
             .toList();
+
     return new GetMemberGoalResponseDto(
         memberGoal.getMemberGoalId(), memberGoal.getTitle(), questDtos);
   }
