@@ -7,13 +7,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.groom.orbit.member.dao.jpa.entity.Member;
+import com.groom.orbit.auth.dao.entity.AuthMember;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class MemberDetails implements UserDetails {
-  private final Member member;
+  private final AuthMember member;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
