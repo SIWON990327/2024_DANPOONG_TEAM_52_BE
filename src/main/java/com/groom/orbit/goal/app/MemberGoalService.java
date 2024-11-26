@@ -89,6 +89,10 @@ public class MemberGoalService {
   }
 
   public List<GetMemberGoalResponseDto> findGoals(Long memberId, Boolean isComplete) {
+    if (isComplete == null) {
+      isComplete = false;
+    }
+
     List<MemberGoal> memberGoals =
         memberGoalRepository.findByMemberIdAndIsComplete(memberId, isComplete);
 

@@ -24,7 +24,8 @@ public class MemberGoalQueryController {
 
   @GetMapping
   public ResponseDto<List<GetMemberGoalResponseDto>> getGoals(
-      @AuthMember Long memberId, @RequestParam("is_complete") Boolean isComplete) {
+      @AuthMember Long memberId,
+      @RequestParam(value = "is_complete", required = false) Boolean isComplete) {
     return ResponseDto.ok(memberGoalService.findGoals(memberId, isComplete));
   }
 
