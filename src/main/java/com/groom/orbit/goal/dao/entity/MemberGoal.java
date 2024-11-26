@@ -62,6 +62,8 @@ public class MemberGoal extends BaseTimeEntity {
   }
 
   public void updateGoal(Goal goal) {
+    this.goal.decreaseCount();
+    goal.increaseCount();
     this.goal = goal;
   }
 

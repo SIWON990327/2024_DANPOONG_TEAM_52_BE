@@ -72,20 +72,13 @@ public class MemberGoalService {
     return new CommonSuccessDto(true);
   }
 
-  public CommonSuccessDto updateGoal(Long memberId, Long goalId, MemberGoalRequestDto dto) {
-    MemberGoal memberGoal = findMemberGoal(memberId, goalId);
+  public CommonSuccessDto updateGoal(Long memberId, Long memberGoalId, MemberGoalRequestDto dto) {
+    MemberGoal memberGoal = findMemberGoal(memberGoalId);
     Goal goal = getGoal(dto.title(), dto.category());
 
-    validateMemberGoal(memberId, goal.getGoalId());
     memberGoal.updateGoal(goal);
 
     return new CommonSuccessDto(true);
-  }
-
-  private void validateMemberGoal(Long memberId, Long goalId) {
-    if (memberGoalRepository.findByMemberIdAndGoalId(memberId, goalId).isPresent()) {
-      throw new CommonException(ErrorCode.ALREADY_EXISTS_GOAL);
-    }
   }
 
   private Goal getGoal(String title, String category) {
