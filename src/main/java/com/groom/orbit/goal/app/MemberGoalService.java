@@ -76,6 +76,7 @@ public class MemberGoalService {
     MemberGoal memberGoal = findMemberGoal(memberGoalId);
     Goal goal = getGoal(dto.title(), dto.category());
 
+    memberGoal.validateMember(memberId);
     memberGoal.updateGoal(goal);
 
     return new CommonSuccessDto(true);
