@@ -61,15 +61,24 @@ public class MemberGoalService {
     return new CommonSuccessDto(true);
   }
 
-  public CommonSuccessDto createGoal(Long memberId, MemberGoalRequestDto dto) {
+  public GetMemberGoalResponseDto createGoal(Long memberId, MemberGoalRequestDto dto) {
     Member member = memberQueryService.findMember(memberId);
     Goal goal = getGoal(dto.title(), dto.category());
 
     MemberGoal memberGoal = MemberGoal.create(member, goal);
     goal.increaseCount();
-    memberGoalRepository.save(memberGoal);
+    MemberGoal savedMemberGoal = memberGoalRepository.save(memberGoal);
 
-    return new CommonSuccessDto(true);
+    List<GetQuestResponseDto> questDtos =
+        savedMemberGoal.getQuests().stream()
+            .map(
+                quest ->
+                    new GetQuestResponseDto(
+                        quest.getQuestId(), quest.getTitle(), quest.getIsComplete()))
+            .toList();
+
+    return new GetMemberGoalResponseDto(
+        savedMemberGoal.getMemberGoalId(), savedMemberGoal.getTitle(), questDtos);
   }
 
   public CommonSuccessDto updateGoal(Long memberId, Long memberGoalId, MemberGoalRequestDto dto) {
