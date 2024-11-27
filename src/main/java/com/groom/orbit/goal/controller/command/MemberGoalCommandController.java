@@ -20,6 +20,7 @@ import com.groom.orbit.config.openai.GoalRecommendResponseDto;
 import com.groom.orbit.config.openai.OpenAiClient;
 import com.groom.orbit.goal.app.MemberGoalService;
 import com.groom.orbit.goal.app.dto.request.MemberGoalRequestDto;
+import com.groom.orbit.goal.app.dto.response.GetMemberGoalResponseDto;
 import com.groom.orbit.goal.app.dto.response.RecommendGoalResponseDto;
 import com.groom.orbit.goal.dao.GoalRepository;
 import com.groom.orbit.goal.dao.entity.Goal;
@@ -45,7 +46,7 @@ public class MemberGoalCommandController {
   }
 
   @PostMapping
-  public ResponseDto<CommonSuccessDto> createMemberGoal(
+  public ResponseDto<GetMemberGoalResponseDto> createMemberGoal(
       @AuthMember Long memberId, @RequestBody MemberGoalRequestDto dto) {
     return ResponseDto.created(memberGoalService.createGoal(memberId, dto));
   }
