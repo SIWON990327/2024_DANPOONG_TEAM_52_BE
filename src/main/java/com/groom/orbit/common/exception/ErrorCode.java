@@ -61,7 +61,8 @@ public enum ErrorCode {
   INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다."),
   UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다."),
   INVALID_STATE(50002, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다."),
-  INVALID_GOAL_COUNT_STATE(50003, HttpStatus.INTERNAL_SERVER_ERROR, "목표 값의 수는 음수가 될 수 없습니다.");
+  INVALID_GOAL_COUNT_STATE(50003, HttpStatus.INTERNAL_SERVER_ERROR, "목표 값의 수는 음수가 될 수 없습니다."),
+  INVALID_VECTORSTORE_STATE(50004, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다.");
 
   private final Integer code;
   private final HttpStatus httpStatus;
