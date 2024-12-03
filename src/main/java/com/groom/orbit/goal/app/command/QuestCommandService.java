@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.orbit.ai.VectorService;
+import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
@@ -36,6 +38,7 @@ public class QuestCommandService {
   private final QuestRepository questRepository;
   private final GoalQueryService goalQueryService;
   private final MemberQueryService memberQueryService;
+  private final VectorService vectorService;
   private final OpenAiClient openAiClient;
 
   /** TODO join 최적화 */
@@ -45,8 +48,15 @@ public class QuestCommandService {
     Quest quest = Quest.create(dto.title(), memberGoal, dto.deadline(), newQuestSequence);
 
     questRepository.save(quest);
+    saveVector(memberId, dto);
 
     return CreateQuestResponse.fromEntity(quest);
+  }
+
+  private void saveVector(Long memberId, CreateQuestRequestDto dto) {
+    CreateVectorDto vectorDto =
+        CreateVectorDto.builder().memberId(memberId).quest(dto.title()).build();
+    vectorService.save(vectorDto);
   }
 
   /** select 최적화 */
