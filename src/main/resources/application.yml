@@ -14,7 +14,18 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
-
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini
+      embedding:
+        options:
+          model: multilingual-e5-large
+    vectorstore:
+      pinecone:
+        api-key: ${PINECONE_API_KEY}
 ---
 jwt:
   secret: ${JWT_SECRET_KEY}
