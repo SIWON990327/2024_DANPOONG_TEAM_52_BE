@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.orbit.ai.VectorService;
-import com.groom.orbit.ai.app.dto.MemberInfoDto;
+import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.auth.app.dto.LoginResponseDto;
 import com.groom.orbit.auth.dao.AuthMemberRepository;
 import com.groom.orbit.auth.dao.entity.AuthMember;
@@ -52,7 +52,7 @@ public class AuthService {
   }
 
   private void saveVector(AuthMember member) {
-    MemberInfoDto vectorDto = MemberInfoDto.builder().memberId(member.getId()).build();
+    CreateVectorDto vectorDto = CreateVectorDto.builder().memberId(member.getId()).build();
     vectorService.save(vectorDto);
   }
 }

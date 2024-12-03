@@ -8,6 +8,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.orbit.ai.VectorService;
+import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
@@ -17,7 +19,6 @@ import com.groom.orbit.goal.app.dto.request.UpdateMemberGoalSequenceRequestDto;
 import com.groom.orbit.goal.app.dto.response.GetMemberGoalResponseDto;
 import com.groom.orbit.goal.app.dto.response.GetQuestResponseDto;
 import com.groom.orbit.goal.app.query.GoalQueryService;
-import com.groom.orbit.goal.dao.GoalRepository;
 import com.groom.orbit.goal.dao.MemberGoalRepository;
 import com.groom.orbit.goal.dao.entity.Goal;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
@@ -36,7 +37,7 @@ public class MemberGoalService {
   private final MemberQueryService memberQueryService;
   private final GoalQueryService goalQueryService;
   private final GoalCommandService goalCommandService;
-  private final GoalRepository goalRepository;
+  private final VectorService vectorService;
 
   @Transactional(readOnly = true)
   public MemberGoal findMemberGoal(Long memberId, Long goalId) {
@@ -77,6 +78,7 @@ public class MemberGoalService {
     memberGoal.setSequence(MemberGoalLen + 1);
 
     MemberGoal savedMemberGoal = memberGoalRepository.save(memberGoal);
+    saveVector(goal);
 
     List<GetQuestResponseDto> questDtos =
         savedMemberGoal.getQuests().stream()
@@ -99,6 +101,11 @@ public class MemberGoalService {
         savedMemberGoal.getCreatedAt().toLocalDate(),
         savedMemberGoal.getCompletedDate().toLocalDate(),
         questDtos);
+  }
+
+  private void saveVector(Goal goal) {
+    CreateVectorDto vectorDto = CreateVectorDto.builder().goal(goal.getTitle()).build();
+    vectorService.save(vectorDto);
   }
 
   public CommonSuccessDto updateMemberGoal(
