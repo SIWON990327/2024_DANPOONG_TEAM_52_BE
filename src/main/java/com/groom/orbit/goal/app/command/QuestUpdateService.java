@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.orbit.ai.VectorService;
+import com.groom.orbit.ai.app.dto.UpdateVectorQuestDto;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
@@ -22,14 +24,26 @@ import lombok.RequiredArgsConstructor;
 public class QuestUpdateService {
 
   private final QuestQueryService questQueryService;
+  private final VectorService vectorService;
 
   public CommonSuccessDto updateQuest(Long memberId, Long questId, UpdateQuestRequestDto dto) {
     Quest quest = questQueryService.findQuest(questId);
     quest.validateMember(memberId);
 
+    updateVector(memberId, dto, quest);
     quest.update(dto.title(), dto.isComplete(), dto.deadline());
 
     return new CommonSuccessDto(true);
+  }
+
+  private void updateVector(Long memberId, UpdateQuestRequestDto dto, Quest quest) {
+    UpdateVectorQuestDto updateDto =
+        UpdateVectorQuestDto.builder()
+            .memberId(memberId)
+            .quest(quest.getTitle())
+            .newQuest(dto.title())
+            .build();
+    vectorService.updateQuest(updateDto);
   }
 
   public CommonSuccessDto updateQuestSequence(

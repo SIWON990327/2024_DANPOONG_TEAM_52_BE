@@ -123,6 +123,9 @@ public class MemberGoalService {
   }
 
   private void updateVector(Long memberId, MemberGoalRequestDto dto, MemberGoal memberGoal) {
+    if (dto.title() == null) {
+      return;
+    }
     UpdateVectorGoalDto updateDto =
         UpdateVectorGoalDto.builder()
             .memberId(memberId)
