@@ -6,7 +6,6 @@ import static com.groom.orbit.ai.app.util.PineconeConst.INTEREST_JOB_NAMESPACE;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Struct;
@@ -23,9 +22,6 @@ public class PineconeVectorStore {
   private final Index index;
   private final PineconeVectorMapper mapper;
 
-  @Value("${spring.ai.vectorstore.pinecone.api-key}")
-  private String PINECONE_API_KEY;
-
   public PineconeVectorStore(Pinecone pinecone, PineconeVectorMapper mapper) {
     this.index = pinecone.getIndexConnection(INDEX_NAME);
     this.mapper = mapper;
@@ -35,9 +31,9 @@ public class PineconeVectorStore {
     upsert(key, vectors, metadata);
   }
 
-  public Optional<Vector> findById(Long key) {
-    String findKey = getKey(key);
-    QueryResponseWithUnsignedIndices response = index.queryByVectorId(1, findKey);
+  public Optional<Vector> findById(Long id) {
+    String findKey = getId(id);
+    QueryResponseWithUnsignedIndices response = getQueryByVectorId(findKey);
 
     return response.getMatchesList().stream()
         .filter(match -> findKey.equals(match.getId()))
@@ -45,11 +41,15 @@ public class PineconeVectorStore {
         .map(match -> mapper.fromStruct(match.getMetadata()));
   }
 
-  private void upsert(Long key, List<Float> vector, Struct metadata) {
-    index.upsert(getKey(key), vector, null, null, metadata, INTEREST_JOB_NAMESPACE);
+  private QueryResponseWithUnsignedIndices getQueryByVectorId(String findKey) {
+    return index.queryByVectorId(1, findKey, INTEREST_JOB_NAMESPACE, false, true);
   }
 
-  private String getKey(Long key) {
-    return key.toString();
+  private void upsert(Long key, List<Float> vector, Struct metadata) {
+    index.upsert(getId(key), vector, null, null, metadata, INTEREST_JOB_NAMESPACE);
+  }
+
+  private String getId(Long id) {
+    return id.toString();
   }
 }
