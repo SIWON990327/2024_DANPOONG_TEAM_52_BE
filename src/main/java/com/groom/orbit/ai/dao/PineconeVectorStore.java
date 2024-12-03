@@ -16,7 +16,6 @@ import com.groom.orbit.ai.app.util.PineconeObjectMapper;
 import io.pinecone.clients.Index;
 import io.pinecone.clients.Pinecone;
 import io.pinecone.unsigned_indices_model.QueryResponseWithUnsignedIndices;
-import io.pinecone.unsigned_indices_model.ScoredVectorWithUnsignedIndices;
 
 @Component
 public class PineconeVectorStore {
@@ -39,11 +38,11 @@ public class PineconeVectorStore {
   public Optional<MemberInfoDto> findById(Long key) {
     String findKey = getKey(key);
     QueryResponseWithUnsignedIndices response = index.queryByVectorId(1, findKey);
-    ScoredVectorWithUnsignedIndices matches = response.getMatches(1);
-    if (matches.getId().equals(findKey)) {
-      return Optional.of(mapper.fromStruct(matches.getMetadata()));
-    }
-    return Optional.empty();
+
+    return response.getMatchesList().stream()
+        .filter(match -> findKey.equals(match.getId()))
+        .findFirst()
+        .map(match -> mapper.fromStruct(match.getMetadata()));
   }
 
   private void upsert(Long key, List<Float> vector, Struct metadata) {
