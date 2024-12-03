@@ -18,11 +18,10 @@ import com.google.protobuf.Value;
 import com.groom.orbit.ai.VectorService;
 import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.ai.app.dto.UpdateVectorGoalDto;
+import com.groom.orbit.ai.app.dto.UpdateVectorQuestDto;
 import com.groom.orbit.ai.app.util.PineconeVectorMapper;
 import com.groom.orbit.ai.dao.PineconeVectorStore;
 import com.groom.orbit.ai.dao.vector.Vector;
-import com.groom.orbit.common.exception.CommonException;
-import com.groom.orbit.common.exception.ErrorCode;
 
 @Service
 public class PineconeService implements VectorService {
@@ -48,7 +47,14 @@ public class PineconeService implements VectorService {
     Vector vector =
         findVector(dto.memberId())
             .map(existingVector -> mergeVector(existingVector, dto))
-            .orElseGet(() -> createNewMemberInfoDto(dto));
+            .orElseGet(
+                () ->
+                    createVector(
+                        dto.memberId(),
+                        dto.memberName(),
+                        dto.interestJobs(),
+                        dto.goal(),
+                        dto.quest()));
 
     saveVector(vector, dto.memberId());
   }
@@ -58,7 +64,17 @@ public class PineconeService implements VectorService {
     Vector vector =
         findVector(dto.memberId())
             .map(existingDto -> updateVector(existingDto, dto))
-            .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_VECTOR));
+            .orElseGet(() -> createVector(dto.memberId(), null, null, dto.newGoal(), null));
+
+    saveVector(vector, dto.memberId());
+  }
+
+  @Override
+  public void updateQuest(UpdateVectorQuestDto dto) {
+    Vector vector =
+        findVector(dto.memberId())
+            .map(existingDto -> updateVector(existingDto, dto))
+            .orElseGet(() -> createVector(dto.memberId(), null, null, null, dto.newQuest()));
 
     saveVector(vector, dto.memberId());
   }
@@ -89,6 +105,18 @@ public class PineconeService implements VectorService {
         .build();
   }
 
+  private Vector updateVector(Vector existingVector, UpdateVectorQuestDto dto) {
+    List<String> updatedQuests = updateList(existingVector.quests(), dto.quest(), dto.newQuest());
+
+    return Vector.builder()
+        .memberId(existingVector.memberId())
+        .memberName(existingVector.memberName())
+        .interestJobs(existingVector.interestJobs())
+        .goals(existingVector.goals())
+        .quests(updatedQuests)
+        .build();
+  }
+
   private List<String> updateList(List<String> existingList, String value, String newValue) {
     if (newValue == null) {
       return existingList.stream().filter(item -> !item.equals(value)).toList();
@@ -101,13 +129,14 @@ public class PineconeService implements VectorService {
     return updatedList;
   }
 
-  private Vector createNewMemberInfoDto(CreateVectorDto dto) {
+  private Vector createVector(
+      Long memberId, String memberName, List<String> interestJobs, String goal, String quest) {
     return Vector.builder()
-        .memberId(dto.memberId())
-        .memberName(dto.memberName() != null ? dto.memberName() : DEFAULT_MEMBER_NAME)
-        .interestJobs(dto.interestJobs() != null ? dto.interestJobs() : Collections.emptyList())
-        .goals(dto.goal() != null ? List.of(dto.goal()) : Collections.emptyList())
-        .quests(dto.quest() != null ? List.of(dto.quest()) : Collections.emptyList())
+        .memberId(memberId)
+        .memberName(memberName != null ? memberName : DEFAULT_MEMBER_NAME)
+        .interestJobs(interestJobs != null ? interestJobs : Collections.emptyList())
+        .goals(goal != null ? List.of(goal) : Collections.emptyList())
+        .quests(quest != null ? List.of(quest) : Collections.emptyList())
         .build();
   }
 
