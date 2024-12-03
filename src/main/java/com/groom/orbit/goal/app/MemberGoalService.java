@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.groom.orbit.ai.VectorService;
 import com.groom.orbit.ai.app.dto.CreateVectorDto;
+import com.groom.orbit.ai.app.dto.UpdateVectorGoalDto;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
@@ -78,7 +79,7 @@ public class MemberGoalService {
     memberGoal.setSequence(MemberGoalLen + 1);
 
     MemberGoal savedMemberGoal = memberGoalRepository.save(memberGoal);
-    saveVector(goal);
+    saveVector(memberId, goal);
 
     List<GetQuestResponseDto> questDtos =
         savedMemberGoal.getQuests().stream()
@@ -103,8 +104,9 @@ public class MemberGoalService {
         questDtos);
   }
 
-  private void saveVector(Goal goal) {
-    CreateVectorDto vectorDto = CreateVectorDto.builder().goal(goal.getTitle()).build();
+  private void saveVector(Long memberId, Goal goal) {
+    CreateVectorDto vectorDto =
+        CreateVectorDto.builder().memberId(memberId).goal(goal.getTitle()).build();
     vectorService.save(vectorDto);
   }
 
@@ -114,9 +116,20 @@ public class MemberGoalService {
     Goal goal = getGoal(dto.title(), dto.category());
 
     memberGoal.validateMember(memberId);
+    updateVector(memberId, dto, memberGoal);
     memberGoal.updateGoal(goal);
 
     return new CommonSuccessDto(true);
+  }
+
+  private void updateVector(Long memberId, MemberGoalRequestDto dto, MemberGoal memberGoal) {
+    UpdateVectorGoalDto updateDto =
+        UpdateVectorGoalDto.builder()
+            .memberId(memberId)
+            .goal(memberGoal.getTitle())
+            .newGoal(dto.title())
+            .build();
+    vectorService.updateGoal(updateDto);
   }
 
   private Goal getGoal(String title, String category) {

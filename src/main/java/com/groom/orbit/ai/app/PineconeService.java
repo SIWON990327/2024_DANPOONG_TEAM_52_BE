@@ -2,9 +2,8 @@ package com.groom.orbit.ai.app;
 
 import static com.groom.orbit.ai.app.util.PineconeConst.DEFAULT_MEMBER_NAME;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +17,7 @@ import com.google.protobuf.Struct.Builder;
 import com.google.protobuf.Value;
 import com.groom.orbit.ai.VectorService;
 import com.groom.orbit.ai.app.dto.CreateVectorDto;
-import com.groom.orbit.ai.app.dto.UpdateVectorDto;
+import com.groom.orbit.ai.app.dto.UpdateVectorGoalDto;
 import com.groom.orbit.ai.app.util.PineconeVectorMapper;
 import com.groom.orbit.ai.dao.PineconeVectorStore;
 import com.groom.orbit.ai.dao.vector.Vector;
@@ -55,7 +54,7 @@ public class PineconeService implements VectorService {
   }
 
   @Override
-  public void update(UpdateVectorDto dto) {
+  public void updateGoal(UpdateVectorGoalDto dto) {
     Vector vector =
         findVector(dto.memberId())
             .map(existingDto -> updateVector(existingDto, dto))
@@ -69,35 +68,37 @@ public class PineconeService implements VectorService {
   }
 
   private void saveVector(Vector vector, Long id) {
-    List<String> inputs = List.of(mapper.mapToString(vector));
+    String stringVector = mapper.mapToString(vector);
+    List<String> inputs = List.of(stringVector);
     List<Embedding> embeddedInputs = embeddingService.embed(inputs);
     List<Float> embeddedVector = toEmbeddingVector(embeddedInputs);
-    Struct metaData = createMetaData(vector);
+    Struct metaData = createMetaData(stringVector);
 
     vectorStore.save(id, embeddedVector, metaData);
   }
 
-  private Vector updateVector(Vector existingVector, UpdateVectorDto dto) {
-    List<String> updatedGoals = updateList(existingVector.goals(), dto.goal());
-    List<String> updatedQuests = updateList(existingVector.quests(), dto.quest());
+  private Vector updateVector(Vector existingVector, UpdateVectorGoalDto dto) {
+    List<String> updatedGoals = updateList(existingVector.goals(), dto.goal(), dto.newGoal());
 
     return Vector.builder()
         .memberId(existingVector.memberId())
         .memberName(existingVector.memberName())
         .interestJobs(existingVector.interestJobs())
         .goals(updatedGoals)
-        .quests(updatedQuests)
+        .quests(existingVector.quests())
         .build();
   }
 
-  private List<String> updateList(List<String> existingList, String newValue) {
+  private List<String> updateList(List<String> existingList, String value, String newValue) {
     if (newValue == null) {
-      return existingList;
+      return existingList.stream().filter(item -> !item.equals(value)).toList();
     }
 
-    return existingList.stream().filter(item -> !item.equals(newValue)).toList().isEmpty()
-        ? List.of(newValue)
-        : existingList;
+    List<String> updatedList = existingList.stream().filter(item -> !item.equals(value)).toList();
+    updatedList = new ArrayList<>(updatedList);
+    updatedList.add(newValue);
+
+    return updatedList;
   }
 
   private Vector createNewMemberInfoDto(CreateVectorDto dto) {
@@ -139,27 +140,10 @@ public class PineconeService implements VectorService {
         .getFirst();
   }
 
-  private static Struct createMetaData(Vector vector) {
+  private static Struct createMetaData(String vector) {
     Builder builder = Struct.newBuilder();
-    Arrays.stream(vector.getClass().getDeclaredFields())
-        .forEach(
-            field -> {
-              field.setAccessible(true);
-              setField(vector, field, builder);
-            });
+    builder.putFields("metadata", Value.newBuilder().setStringValue(vector).build());
 
     return builder.build();
-  }
-
-  private static void setField(Object dto, Field field, Builder builder) {
-    try {
-      Object value = field.get(dto);
-      if (value != null) {
-        builder.putFields(
-            field.getName(), Value.newBuilder().setStringValue(value.toString()).build());
-      }
-    } catch (IllegalAccessException e) {
-      throw new CommonException(ErrorCode.INVALID_STATE);
-    }
   }
 }
