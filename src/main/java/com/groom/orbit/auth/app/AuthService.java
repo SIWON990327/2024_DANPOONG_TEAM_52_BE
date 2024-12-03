@@ -3,6 +3,8 @@ package com.groom.orbit.auth.app;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.orbit.ai.VectorService;
+import com.groom.orbit.ai.app.dto.MemberInfoDto;
 import com.groom.orbit.auth.app.dto.LoginResponseDto;
 import com.groom.orbit.auth.dao.AuthMemberRepository;
 import com.groom.orbit.auth.dao.entity.AuthMember;
@@ -21,6 +23,7 @@ public class AuthService {
   private final AuthMemberRepository memberRepository;
   private final AuthTokenGenerator authTokensGenerator;
   private final RequestOAuthInfoService requestOAuthInfoService;
+  private final VectorService vectorService;
 
   public LoginResponseDto login(OAuthLoginParams params) {
     OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
@@ -43,6 +46,13 @@ public class AuthService {
             .nickname(oAuthInfoResponse.getKakaoNickname())
             .build();
 
-    return memberRepository.save(member);
+    AuthMember savedMember = memberRepository.save(member);
+    saveVector(savedMember);
+    return savedMember;
+  }
+
+  private void saveVector(AuthMember member) {
+    MemberInfoDto vectorDto = MemberInfoDto.builder().memberId(member.getId()).build();
+    vectorService.save(vectorDto);
   }
 }
