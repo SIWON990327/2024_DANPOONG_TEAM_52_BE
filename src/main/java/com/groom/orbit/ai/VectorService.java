@@ -1,8 +1,8 @@
 package com.groom.orbit.ai;
 
-import com.groom.orbit.ai.app.dto.MemberInterestJobDto;
+import com.groom.orbit.ai.app.dto.MemberInfoDto;
 
 public interface VectorService {
 
-  void saveMember(MemberInterestJobDto dto);
+  void save(MemberInfoDto dto);
 }

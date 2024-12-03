@@ -15,7 +15,7 @@ import com.google.protobuf.Struct;
 import com.google.protobuf.Struct.Builder;
 import com.google.protobuf.Value;
 import com.groom.orbit.ai.VectorService;
-import com.groom.orbit.ai.app.dto.MemberInterestJobDto;
+import com.groom.orbit.ai.app.dto.MemberInfoDto;
 import com.groom.orbit.ai.app.util.PineconeObjectMapper;
 import com.groom.orbit.ai.dao.PineconeVectorStore;
 import com.groom.orbit.common.exception.CommonException;
@@ -38,13 +38,22 @@ public class PineconeService implements VectorService {
   }
 
   @Override
-  public void saveMember(MemberInterestJobDto dto) {
+  public void save(MemberInfoDto dto) {
     List<String> inputs = List.of(mapper.mapToString(dto));
     List<Embedding> embeddedInputs = embeddingService.embed(inputs);
     List<Float> vectors = toVector(embeddedInputs);
     Struct metaData = createMetaData(dto);
 
     vectorStore.save(vectors, metaData, INTEREST_JOB_NAMESPACE);
+  }
+
+  private static List<Float> toVector(List<Embedding> embeddedInputs) {
+    return embeddedInputs.stream()
+        .map(Embedding::getValues)
+        .filter(Objects::nonNull)
+        .map(values -> values.stream().map(BigDecimal::floatValue).toList())
+        .toList()
+        .getFirst();
   }
 
   private static Struct createMetaData(Object dto) {
@@ -61,15 +70,6 @@ public class PineconeService implements VectorService {
             });
 
     return builder.build();
-  }
-
-  private static List<Float> toVector(List<Embedding> embeddedInputs) {
-    return embeddedInputs.stream()
-        .map(Embedding::getValues)
-        .filter(Objects::nonNull)
-        .map(values -> values.stream().map(BigDecimal::floatValue).toList())
-        .toList()
-        .getFirst();
   }
 
   private static void setField(Object dto, Field field, Builder builder) {
