@@ -24,6 +24,7 @@ public enum ErrorCode {
   NOT_FOUND_QUEST(40407, HttpStatus.NOT_FOUND, "해당 퀘스트가 존재하지 않습니다."),
   NOT_FOUND_GOAL_CATEGORY(40408, HttpStatus.NOT_FOUND, "해당 목표 카테고리가 존재하지 않습니다."),
   NOT_FOUND_MEMBER_GOAL(40409, HttpStatus.NOT_FOUND, "해당 사용자 목표가 존재하지 않습니다."),
+  NOT_FOUND_VECTOR(40410, HttpStatus.NOT_FOUND, "해당 벡터가 존재하지 않습니다."),
 
   // Invalid Argument Error
   MISSING_REQUEST_PARAMETER(40000, HttpStatus.BAD_REQUEST, "필수 요청 파라미터가 누락되었습니다."),
@@ -61,7 +62,8 @@ public enum ErrorCode {
   INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다."),
   UPLOAD_FILE_ERROR(50001, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다."),
   INVALID_STATE(50002, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다."),
-  INVALID_GOAL_COUNT_STATE(50003, HttpStatus.INTERNAL_SERVER_ERROR, "목표 값의 수는 음수가 될 수 없습니다.");
+  INVALID_GOAL_COUNT_STATE(50003, HttpStatus.INTERNAL_SERVER_ERROR, "목표 값의 수는 음수가 될 수 없습니다."),
+  INVALID_VECTORSTORE_STATE(50004, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 에러입니다.");
 
   private final Integer code;
   private final HttpStatus httpStatus;
