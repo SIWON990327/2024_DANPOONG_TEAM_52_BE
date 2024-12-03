@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.openapitools.inference.client.model.Embedding;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.google.protobuf.Value;
 import com.groom.orbit.ai.VectorService;
 import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.ai.app.dto.MemberInfoDto;
+import com.groom.orbit.ai.app.dto.UpdateVectorDto;
 import com.groom.orbit.ai.app.util.PineconeObjectMapper;
 import com.groom.orbit.ai.dao.PineconeVectorStore;
 import com.groom.orbit.common.exception.CommonException;
@@ -44,18 +46,58 @@ public class PineconeService implements VectorService {
 
   @Override
   public void save(CreateVectorDto dto) {
-    MemberInfoDto updatedDto =
-        pineconeVectorStore
-            .findById(dto.memberId())
+    MemberInfoDto createDto =
+        findVector(dto.memberId())
             .map(existingDto -> mergeDtos(existingDto, dto))
             .orElseGet(() -> createNewMemberInfoDto(dto));
 
-    List<String> inputs = List.of(mapper.mapToString(updatedDto));
+    saveVector(createDto, dto.memberId());
+  }
+
+  @Override
+  public void update(UpdateVectorDto dto) {
+    MemberInfoDto updatedDto =
+        findVector(dto.memberId())
+            .map(existingDto -> updateLists(existingDto, dto))
+            .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_VECTOR));
+
+    saveVector(updatedDto, dto.memberId());
+  }
+
+  private Optional<MemberInfoDto> findVector(Long dto) {
+    return pineconeVectorStore.findById(dto);
+  }
+
+  private void saveVector(MemberInfoDto createDto, Long dto) {
+    List<String> inputs = List.of(mapper.mapToString(createDto));
     List<Embedding> embeddedInputs = embeddingService.embed(inputs);
     List<Float> vectors = toVector(embeddedInputs);
-    Struct metaData = createMetaData(updatedDto);
+    Struct metaData = createMetaData(createDto);
 
-    vectorStore.save(dto.memberId(), vectors, metaData);
+    vectorStore.save(dto, vectors, metaData);
+  }
+
+  private MemberInfoDto updateLists(MemberInfoDto existingDto, UpdateVectorDto dto) {
+    List<String> updatedGoals = updateList(existingDto.goals(), dto.goal());
+    List<String> updatedQuests = updateList(existingDto.quests(), dto.quest());
+
+    return MemberInfoDto.builder()
+        .memberId(existingDto.memberId())
+        .memberName(existingDto.memberName())
+        .interestJobs(existingDto.interestJobs())
+        .goals(updatedGoals)
+        .quests(updatedQuests)
+        .build();
+  }
+
+  private List<String> updateList(List<String> existingList, String newValue) {
+    if (newValue == null) {
+      return existingList;
+    }
+
+    return existingList.stream().filter(item -> !item.equals(newValue)).toList().isEmpty()
+        ? List.of(newValue)
+        : existingList;
   }
 
   private MemberInfoDto createNewMemberInfoDto(CreateVectorDto dto) {
