@@ -57,7 +57,7 @@ public class MemberGoalCommandController {
       @AuthMember Long memberId,
       @PathVariable("member_goal_id") Long memberGoalId,
       @RequestBody MemberGoalRequestDto dto) {
-    return ResponseDto.ok(memberGoalService.updateGoal(memberId, memberGoalId, dto));
+    return ResponseDto.ok(memberGoalService.updateMemberGoal(memberId, memberGoalId, dto));
   }
 
   @PostMapping("/recommend")

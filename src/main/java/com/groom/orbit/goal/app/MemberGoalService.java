@@ -72,8 +72,7 @@ public class MemberGoalService {
     MemberGoal memberGoal = MemberGoal.create(member, goal);
     goal.increaseCount();
 
-    Integer MemberGoalLen =
-        memberGoalRepository.findAllByMemberIdAndIsCompleteFalse(memberId).size();
+    int MemberGoalLen = memberGoalRepository.findAllByMemberIdAndIsCompleteFalse(memberId).size();
 
     memberGoal.setSequence(MemberGoalLen + 1);
 
@@ -102,7 +101,8 @@ public class MemberGoalService {
         questDtos);
   }
 
-  public CommonSuccessDto updateGoal(Long memberId, Long memberGoalId, MemberGoalRequestDto dto) {
+  public CommonSuccessDto updateMemberGoal(
+      Long memberId, Long memberGoalId, MemberGoalRequestDto dto) {
     MemberGoal memberGoal = findMemberGoal(memberGoalId);
     Goal goal = getGoal(dto.title(), dto.category());
 
