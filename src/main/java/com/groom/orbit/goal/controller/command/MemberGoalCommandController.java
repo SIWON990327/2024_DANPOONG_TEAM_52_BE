@@ -64,7 +64,7 @@ public class MemberGoalCommandController {
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public ResponseDto<RecommendGoalResponseDto> creatRecommendGoal(@AuthMember Long memberId) {
     Member member = memberQueryService.findMember(memberId);
-    String job = member.getInterestJobs().get(0).getJob().getName();
+    String job = member.getInterestJobs().getFirst().getJob().getName();
 
     List<String> goal = memberGoalService.findMemberGoalNotCompleted(memberId);
 
