@@ -18,23 +18,23 @@ import com.google.protobuf.Struct.Builder;
 import com.google.protobuf.Value;
 import com.groom.orbit.ai.VectorService;
 import com.groom.orbit.ai.app.dto.CreateVectorDto;
-import com.groom.orbit.ai.app.dto.MemberInfoDto;
 import com.groom.orbit.ai.app.dto.UpdateVectorDto;
-import com.groom.orbit.ai.app.util.PineconeObjectMapper;
+import com.groom.orbit.ai.app.util.PineconeVectorMapper;
 import com.groom.orbit.ai.dao.PineconeVectorStore;
+import com.groom.orbit.ai.dao.vector.Vector;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
 
 @Service
 public class PineconeService implements VectorService {
 
-  private final PineconeObjectMapper mapper;
+  private final PineconeVectorMapper mapper;
   private final PineconeVectorStore vectorStore;
   private final PineconeEmbeddingService embeddingService;
   private final PineconeVectorStore pineconeVectorStore;
 
   public PineconeService(
-      PineconeObjectMapper mapper,
+      PineconeVectorMapper mapper,
       PineconeVectorStore vectorStore,
       PineconeEmbeddingService embeddingService,
       PineconeVectorStore pineconeVectorStore) {
@@ -46,45 +46,45 @@ public class PineconeService implements VectorService {
 
   @Override
   public void save(CreateVectorDto dto) {
-    MemberInfoDto createDto =
+    Vector vector =
         findVector(dto.memberId())
-            .map(existingDto -> mergeDtos(existingDto, dto))
+            .map(existingVector -> mergeVector(existingVector, dto))
             .orElseGet(() -> createNewMemberInfoDto(dto));
 
-    saveVector(createDto, dto.memberId());
+    saveVector(vector, dto.memberId());
   }
 
   @Override
   public void update(UpdateVectorDto dto) {
-    MemberInfoDto updatedDto =
+    Vector vector =
         findVector(dto.memberId())
-            .map(existingDto -> updateLists(existingDto, dto))
+            .map(existingDto -> updateVector(existingDto, dto))
             .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_VECTOR));
 
-    saveVector(updatedDto, dto.memberId());
+    saveVector(vector, dto.memberId());
   }
 
-  private Optional<MemberInfoDto> findVector(Long dto) {
-    return pineconeVectorStore.findById(dto);
+  private Optional<Vector> findVector(Long id) {
+    return pineconeVectorStore.findById(id);
   }
 
-  private void saveVector(MemberInfoDto createDto, Long dto) {
-    List<String> inputs = List.of(mapper.mapToString(createDto));
+  private void saveVector(Vector vector, Long id) {
+    List<String> inputs = List.of(mapper.mapToString(vector));
     List<Embedding> embeddedInputs = embeddingService.embed(inputs);
-    List<Float> vectors = toVector(embeddedInputs);
-    Struct metaData = createMetaData(createDto);
+    List<Float> embeddedVector = toEmbeddingVector(embeddedInputs);
+    Struct metaData = createMetaData(vector);
 
-    vectorStore.save(dto, vectors, metaData);
+    vectorStore.save(id, embeddedVector, metaData);
   }
 
-  private MemberInfoDto updateLists(MemberInfoDto existingDto, UpdateVectorDto dto) {
-    List<String> updatedGoals = updateList(existingDto.goals(), dto.goal());
-    List<String> updatedQuests = updateList(existingDto.quests(), dto.quest());
+  private Vector updateVector(Vector existingVector, UpdateVectorDto dto) {
+    List<String> updatedGoals = updateList(existingVector.goals(), dto.goal());
+    List<String> updatedQuests = updateList(existingVector.quests(), dto.quest());
 
-    return MemberInfoDto.builder()
-        .memberId(existingDto.memberId())
-        .memberName(existingDto.memberName())
-        .interestJobs(existingDto.interestJobs())
+    return Vector.builder()
+        .memberId(existingVector.memberId())
+        .memberName(existingVector.memberName())
+        .interestJobs(existingVector.interestJobs())
         .goals(updatedGoals)
         .quests(updatedQuests)
         .build();
@@ -100,8 +100,8 @@ public class PineconeService implements VectorService {
         : existingList;
   }
 
-  private MemberInfoDto createNewMemberInfoDto(CreateVectorDto dto) {
-    return MemberInfoDto.builder()
+  private Vector createNewMemberInfoDto(CreateVectorDto dto) {
+    return Vector.builder()
         .memberId(dto.memberId())
         .memberName(dto.memberName() != null ? dto.memberName() : DEFAULT_MEMBER_NAME)
         .interestJobs(dto.interestJobs() != null ? dto.interestJobs() : Collections.emptyList())
@@ -110,20 +110,19 @@ public class PineconeService implements VectorService {
         .build();
   }
 
-  private MemberInfoDto mergeDtos(MemberInfoDto existing, CreateVectorDto incoming) {
-    return MemberInfoDto.builder()
-        .memberId(existing.memberId())
-        .memberName(incoming.memberName() != null ? incoming.memberName() : existing.memberName())
+  private Vector mergeVector(Vector existingVector, CreateVectorDto dto) {
+    return Vector.builder()
+        .memberId(existingVector.memberId())
+        .memberName(dto.memberName() != null ? dto.memberName() : existingVector.memberName())
         .interestJobs(
-            incoming.interestJobs() != null && !incoming.interestJobs().isEmpty()
-                ? incoming.interestJobs()
-                : existing.interestJobs())
-        .goals(addUniqueValue(existing.goals(), incoming.goal()))
-        .quests(addUniqueValue(existing.quests(), incoming.quest()))
+            dto.interestJobs() != null && !dto.interestJobs().isEmpty()
+                ? dto.interestJobs()
+                : existingVector.interestJobs())
+        .goals(addUniqueValue(existingVector.goals(), dto.goal()))
+        .quests(addUniqueValue(existingVector.quests(), dto.quest()))
         .build();
   }
 
-  // 리스트에 중복되지 않는 값만 추가하는 유틸 메서드
   private List<String> addUniqueValue(List<String> existingList, String newValue) {
     if (newValue != null && !existingList.contains(newValue)) {
       existingList.add(newValue);
@@ -131,7 +130,7 @@ public class PineconeService implements VectorService {
     return existingList;
   }
 
-  private static List<Float> toVector(List<Embedding> embeddedInputs) {
+  private static List<Float> toEmbeddingVector(List<Embedding> embeddedInputs) {
     return embeddedInputs.stream()
         .map(Embedding::getValues)
         .filter(Objects::nonNull)
@@ -140,13 +139,13 @@ public class PineconeService implements VectorService {
         .getFirst();
   }
 
-  private static Struct createMetaData(MemberInfoDto dto) {
+  private static Struct createMetaData(Vector vector) {
     Builder builder = Struct.newBuilder();
-    Arrays.stream(dto.getClass().getDeclaredFields())
+    Arrays.stream(vector.getClass().getDeclaredFields())
         .forEach(
             field -> {
               field.setAccessible(true);
-              setField(dto, field, builder);
+              setField(vector, field, builder);
             });
 
     return builder.build();

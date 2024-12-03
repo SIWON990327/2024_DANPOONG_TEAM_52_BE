@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Struct;
-import com.groom.orbit.ai.app.dto.MemberInfoDto;
-import com.groom.orbit.ai.app.util.PineconeObjectMapper;
+import com.groom.orbit.ai.app.util.PineconeVectorMapper;
+import com.groom.orbit.ai.dao.vector.Vector;
 
 import io.pinecone.clients.Index;
 import io.pinecone.clients.Pinecone;
@@ -21,12 +21,12 @@ import io.pinecone.unsigned_indices_model.QueryResponseWithUnsignedIndices;
 public class PineconeVectorStore {
 
   private final Index index;
-  private final PineconeObjectMapper mapper;
+  private final PineconeVectorMapper mapper;
 
   @Value("${spring.ai.vectorstore.pinecone.api-key}")
   private String PINECONE_API_KEY;
 
-  public PineconeVectorStore(Pinecone pinecone, PineconeObjectMapper mapper) {
+  public PineconeVectorStore(Pinecone pinecone, PineconeVectorMapper mapper) {
     this.index = pinecone.getIndexConnection(INDEX_NAME);
     this.mapper = mapper;
   }
@@ -35,7 +35,7 @@ public class PineconeVectorStore {
     upsert(key, vectors, metadata);
   }
 
-  public Optional<MemberInfoDto> findById(Long key) {
+  public Optional<Vector> findById(Long key) {
     String findKey = getKey(key);
     QueryResponseWithUnsignedIndices response = index.queryByVectorId(1, findKey);
 
