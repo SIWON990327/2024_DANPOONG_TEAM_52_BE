@@ -23,7 +23,6 @@ public class JobCommandService {
   public CommonSuccessDto saveInterestJob(Long memberId, InterestJobRequestDto dto) {
 
     List<InterestJob> interestJobList = interestJobRepository.findAllByMemberId(memberId);
-
     interestJobRepository.deleteAll(interestJobList);
 
     List<Job> jobs = jobQueryService.findJobsByIds(dto.ids());

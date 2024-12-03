@@ -44,7 +44,7 @@ public class PineconeService implements VectorService {
     List<Float> vectors = toVector(embeddedInputs);
     Struct metaData = createMetaData(dto);
 
-    vectorStore.save(vectors, metaData, INTEREST_JOB_NAMESPACE);
+    vectorStore.save(dto.memberId(), vectors, metaData, INTEREST_JOB_NAMESPACE);
   }
 
   private static List<Float> toVector(List<Embedding> embeddedInputs) {
