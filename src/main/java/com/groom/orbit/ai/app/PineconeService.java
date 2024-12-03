@@ -1,7 +1,5 @@
 package com.groom.orbit.ai.app;
 
-import static com.groom.orbit.ai.app.util.PineconeConst.INTEREST_JOB_NAMESPACE;
-
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -27,24 +25,52 @@ public class PineconeService implements VectorService {
   private final PineconeObjectMapper mapper;
   private final PineconeVectorStore vectorStore;
   private final PineconeEmbeddingService embeddingService;
+  private final PineconeVectorStore pineconeVectorStore;
 
   public PineconeService(
       PineconeObjectMapper mapper,
       PineconeVectorStore vectorStore,
-      PineconeEmbeddingService embeddingService) {
+      PineconeEmbeddingService embeddingService,
+      PineconeVectorStore pineconeVectorStore) {
     this.mapper = mapper;
     this.vectorStore = vectorStore;
     this.embeddingService = embeddingService;
+    this.pineconeVectorStore = pineconeVectorStore;
   }
 
   @Override
   public void save(MemberInfoDto dto) {
-    List<String> inputs = List.of(mapper.mapToString(dto));
+    MemberInfoDto updatedDto =
+        pineconeVectorStore
+            .findById(dto.memberId())
+            .map(existingDto -> mergeDtos(existingDto, dto))
+            .orElse(dto);
+
+    List<String> inputs = List.of(mapper.mapToString(updatedDto));
     List<Embedding> embeddedInputs = embeddingService.embed(inputs);
     List<Float> vectors = toVector(embeddedInputs);
-    Struct metaData = createMetaData(dto);
+    Struct metaData = createMetaData(updatedDto);
 
-    vectorStore.save(dto.memberId(), vectors, metaData, INTEREST_JOB_NAMESPACE);
+    vectorStore.save(dto.memberId(), vectors, metaData);
+  }
+
+  private MemberInfoDto mergeDtos(MemberInfoDto existing, MemberInfoDto incoming) {
+    return MemberInfoDto.builder()
+        .memberId(existing.memberId())
+        .memberName(incoming.memberName() != null ? incoming.memberName() : existing.memberName())
+        .interestJobs(
+            incoming.interestJobs() != null && !incoming.interestJobs().isEmpty()
+                ? incoming.interestJobs()
+                : existing.interestJobs())
+        .goals(
+            incoming.goals() != null && !incoming.goals().isEmpty()
+                ? incoming.goals()
+                : existing.goals())
+        .quests(
+            incoming.quests() != null && !incoming.quests().isEmpty()
+                ? incoming.quests()
+                : existing.quests())
+        .build();
   }
 
   private static List<Float> toVector(List<Embedding> embeddedInputs) {
@@ -56,12 +82,8 @@ public class PineconeService implements VectorService {
         .getFirst();
   }
 
-  private static Struct createMetaData(Object dto) {
+  private static Struct createMetaData(MemberInfoDto dto) {
     Builder builder = Struct.newBuilder();
-    if (!dto.getClass().isRecord()) {
-      throw new CommonException(ErrorCode.INVALID_STATE);
-    }
-
     Arrays.stream(dto.getClass().getDeclaredFields())
         .forEach(
             field -> {
