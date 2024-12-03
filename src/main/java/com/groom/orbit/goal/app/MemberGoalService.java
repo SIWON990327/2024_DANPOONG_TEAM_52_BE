@@ -8,6 +8,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.groom.orbit.ai.VectorService;
+import com.groom.orbit.ai.app.dto.CreateVectorDto;
+import com.groom.orbit.ai.app.dto.UpdateVectorGoalDto;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
@@ -17,7 +20,6 @@ import com.groom.orbit.goal.app.dto.request.UpdateMemberGoalSequenceRequestDto;
 import com.groom.orbit.goal.app.dto.response.GetMemberGoalResponseDto;
 import com.groom.orbit.goal.app.dto.response.GetQuestResponseDto;
 import com.groom.orbit.goal.app.query.GoalQueryService;
-import com.groom.orbit.goal.dao.GoalRepository;
 import com.groom.orbit.goal.dao.MemberGoalRepository;
 import com.groom.orbit.goal.dao.entity.Goal;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
@@ -36,7 +38,7 @@ public class MemberGoalService {
   private final MemberQueryService memberQueryService;
   private final GoalQueryService goalQueryService;
   private final GoalCommandService goalCommandService;
-  private final GoalRepository goalRepository;
+  private final VectorService vectorService;
 
   @Transactional(readOnly = true)
   public MemberGoal findMemberGoal(Long memberId, Long goalId) {
@@ -72,12 +74,12 @@ public class MemberGoalService {
     MemberGoal memberGoal = MemberGoal.create(member, goal);
     goal.increaseCount();
 
-    Integer MemberGoalLen =
-        memberGoalRepository.findAllByMemberIdAndIsCompleteFalse(memberId).size();
+    int MemberGoalLen = memberGoalRepository.findAllByMemberIdAndIsCompleteFalse(memberId).size();
 
     memberGoal.setSequence(MemberGoalLen + 1);
 
     MemberGoal savedMemberGoal = memberGoalRepository.save(memberGoal);
+    saveVector(memberId, goal);
 
     List<GetQuestResponseDto> questDtos =
         savedMemberGoal.getQuests().stream()
@@ -102,14 +104,32 @@ public class MemberGoalService {
         questDtos);
   }
 
-  public CommonSuccessDto updateGoal(Long memberId, Long memberGoalId, MemberGoalRequestDto dto) {
+  private void saveVector(Long memberId, Goal goal) {
+    CreateVectorDto vectorDto =
+        CreateVectorDto.builder().memberId(memberId).goal(goal.getTitle()).build();
+    vectorService.save(vectorDto);
+  }
+
+  public CommonSuccessDto updateMemberGoal(
+      Long memberId, Long memberGoalId, MemberGoalRequestDto dto) {
     MemberGoal memberGoal = findMemberGoal(memberGoalId);
     Goal goal = getGoal(dto.title(), dto.category());
 
     memberGoal.validateMember(memberId);
+    updateVector(memberId, dto, memberGoal);
     memberGoal.updateGoal(goal);
 
     return new CommonSuccessDto(true);
+  }
+
+  private void updateVector(Long memberId, MemberGoalRequestDto dto, MemberGoal memberGoal) {
+    UpdateVectorGoalDto updateDto =
+        UpdateVectorGoalDto.builder()
+            .memberId(memberId)
+            .goal(memberGoal.getTitle())
+            .newGoal(dto.title())
+            .build();
+    vectorService.updateGoal(updateDto);
   }
 
   private Goal getGoal(String title, String category) {

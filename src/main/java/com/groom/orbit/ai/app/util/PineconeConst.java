@@ -9,4 +9,5 @@ public class PineconeConst {
   public static final String INTEREST_JOB_NAMESPACE = "interest_job";
   public static final String INPUT_TYPE_PARAMETER_KEY = "input_type";
   public static final String QUERY_PARAMETER_VALUE = "query";
+  public static final String DEFAULT_MEMBER_NAME = "";
 }

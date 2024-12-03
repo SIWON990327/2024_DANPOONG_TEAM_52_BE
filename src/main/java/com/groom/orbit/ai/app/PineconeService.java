@@ -1,10 +1,13 @@
 package com.groom.orbit.ai.app;
 
-import java.lang.reflect.Field;
+import static com.groom.orbit.ai.app.util.PineconeConst.DEFAULT_MEMBER_NAME;
+
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.openapitools.inference.client.model.Embedding;
 import org.springframework.stereotype.Service;
@@ -13,22 +16,24 @@ import com.google.protobuf.Struct;
 import com.google.protobuf.Struct.Builder;
 import com.google.protobuf.Value;
 import com.groom.orbit.ai.VectorService;
-import com.groom.orbit.ai.app.dto.MemberInfoDto;
-import com.groom.orbit.ai.app.util.PineconeObjectMapper;
+import com.groom.orbit.ai.app.dto.CreateVectorDto;
+import com.groom.orbit.ai.app.dto.UpdateVectorGoalDto;
+import com.groom.orbit.ai.app.util.PineconeVectorMapper;
 import com.groom.orbit.ai.dao.PineconeVectorStore;
+import com.groom.orbit.ai.dao.vector.Vector;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
 
 @Service
 public class PineconeService implements VectorService {
 
-  private final PineconeObjectMapper mapper;
+  private final PineconeVectorMapper mapper;
   private final PineconeVectorStore vectorStore;
   private final PineconeEmbeddingService embeddingService;
   private final PineconeVectorStore pineconeVectorStore;
 
   public PineconeService(
-      PineconeObjectMapper mapper,
+      PineconeVectorMapper mapper,
       PineconeVectorStore vectorStore,
       PineconeEmbeddingService embeddingService,
       PineconeVectorStore pineconeVectorStore) {
@@ -39,41 +44,94 @@ public class PineconeService implements VectorService {
   }
 
   @Override
-  public void save(MemberInfoDto dto) {
-    MemberInfoDto updatedDto =
-        pineconeVectorStore
-            .findById(dto.memberId())
-            .map(existingDto -> mergeDtos(existingDto, dto))
-            .orElse(dto);
+  public void save(CreateVectorDto dto) {
+    Vector vector =
+        findVector(dto.memberId())
+            .map(existingVector -> mergeVector(existingVector, dto))
+            .orElseGet(() -> createNewMemberInfoDto(dto));
 
-    List<String> inputs = List.of(mapper.mapToString(updatedDto));
-    List<Embedding> embeddedInputs = embeddingService.embed(inputs);
-    List<Float> vectors = toVector(embeddedInputs);
-    Struct metaData = createMetaData(updatedDto);
-
-    vectorStore.save(dto.memberId(), vectors, metaData);
+    saveVector(vector, dto.memberId());
   }
 
-  private MemberInfoDto mergeDtos(MemberInfoDto existing, MemberInfoDto incoming) {
-    return MemberInfoDto.builder()
-        .memberId(existing.memberId())
-        .memberName(incoming.memberName() != null ? incoming.memberName() : existing.memberName())
-        .interestJobs(
-            incoming.interestJobs() != null && !incoming.interestJobs().isEmpty()
-                ? incoming.interestJobs()
-                : existing.interestJobs())
-        .goals(
-            incoming.goals() != null && !incoming.goals().isEmpty()
-                ? incoming.goals()
-                : existing.goals())
-        .quests(
-            incoming.quests() != null && !incoming.quests().isEmpty()
-                ? incoming.quests()
-                : existing.quests())
+  @Override
+  public void updateGoal(UpdateVectorGoalDto dto) {
+    Vector vector =
+        findVector(dto.memberId())
+            .map(existingDto -> updateVector(existingDto, dto))
+            .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_VECTOR));
+
+    saveVector(vector, dto.memberId());
+  }
+
+  private Optional<Vector> findVector(Long id) {
+    return pineconeVectorStore.findById(id);
+  }
+
+  private void saveVector(Vector vector, Long id) {
+    String stringVector = mapper.mapToString(vector);
+    List<String> inputs = List.of(stringVector);
+    List<Embedding> embeddedInputs = embeddingService.embed(inputs);
+    List<Float> embeddedVector = toEmbeddingVector(embeddedInputs);
+    Struct metaData = createMetaData(stringVector);
+
+    vectorStore.save(id, embeddedVector, metaData);
+  }
+
+  private Vector updateVector(Vector existingVector, UpdateVectorGoalDto dto) {
+    List<String> updatedGoals = updateList(existingVector.goals(), dto.goal(), dto.newGoal());
+
+    return Vector.builder()
+        .memberId(existingVector.memberId())
+        .memberName(existingVector.memberName())
+        .interestJobs(existingVector.interestJobs())
+        .goals(updatedGoals)
+        .quests(existingVector.quests())
         .build();
   }
 
-  private static List<Float> toVector(List<Embedding> embeddedInputs) {
+  private List<String> updateList(List<String> existingList, String value, String newValue) {
+    if (newValue == null) {
+      return existingList.stream().filter(item -> !item.equals(value)).toList();
+    }
+
+    List<String> updatedList = existingList.stream().filter(item -> !item.equals(value)).toList();
+    updatedList = new ArrayList<>(updatedList);
+    updatedList.add(newValue);
+
+    return updatedList;
+  }
+
+  private Vector createNewMemberInfoDto(CreateVectorDto dto) {
+    return Vector.builder()
+        .memberId(dto.memberId())
+        .memberName(dto.memberName() != null ? dto.memberName() : DEFAULT_MEMBER_NAME)
+        .interestJobs(dto.interestJobs() != null ? dto.interestJobs() : Collections.emptyList())
+        .goals(dto.goal() != null ? List.of(dto.goal()) : Collections.emptyList())
+        .quests(dto.quest() != null ? List.of(dto.quest()) : Collections.emptyList())
+        .build();
+  }
+
+  private Vector mergeVector(Vector existingVector, CreateVectorDto dto) {
+    return Vector.builder()
+        .memberId(existingVector.memberId())
+        .memberName(dto.memberName() != null ? dto.memberName() : existingVector.memberName())
+        .interestJobs(
+            dto.interestJobs() != null && !dto.interestJobs().isEmpty()
+                ? dto.interestJobs()
+                : existingVector.interestJobs())
+        .goals(addUniqueValue(existingVector.goals(), dto.goal()))
+        .quests(addUniqueValue(existingVector.quests(), dto.quest()))
+        .build();
+  }
+
+  private List<String> addUniqueValue(List<String> existingList, String newValue) {
+    if (newValue != null && !existingList.contains(newValue)) {
+      existingList.add(newValue);
+    }
+    return existingList;
+  }
+
+  private static List<Float> toEmbeddingVector(List<Embedding> embeddedInputs) {
     return embeddedInputs.stream()
         .map(Embedding::getValues)
         .filter(Objects::nonNull)
@@ -82,27 +140,10 @@ public class PineconeService implements VectorService {
         .getFirst();
   }
 
-  private static Struct createMetaData(MemberInfoDto dto) {
+  private static Struct createMetaData(String vector) {
     Builder builder = Struct.newBuilder();
-    Arrays.stream(dto.getClass().getDeclaredFields())
-        .forEach(
-            field -> {
-              field.setAccessible(true);
-              setField(dto, field, builder);
-            });
+    builder.putFields("metadata", Value.newBuilder().setStringValue(vector).build());
 
     return builder.build();
-  }
-
-  private static void setField(Object dto, Field field, Builder builder) {
-    try {
-      Object value = field.get(dto);
-      if (value != null) {
-        builder.putFields(
-            field.getName(), Value.newBuilder().setStringValue(value.toString()).build());
-      }
-    } catch (IllegalAccessException e) {
-      throw new CommonException(ErrorCode.INVALID_STATE);
-    }
   }
 }

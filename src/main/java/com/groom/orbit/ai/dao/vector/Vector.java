@@ -1,11 +1,11 @@
-package com.groom.orbit.ai.app.dto;
+package com.groom.orbit.ai.dao.vector;
 
 import java.util.List;
 
 import lombok.Builder;
 
 @Builder
-public record MemberInfoDto(
+public record Vector(
     Long memberId,
     String memberName,
     List<String> interestJobs,
