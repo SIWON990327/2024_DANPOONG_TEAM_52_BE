@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.groom.orbit.ai.app.OpenAiService;
+import com.groom.orbit.ai.AiService;
 import com.groom.orbit.job.app.InterestJobService;
 import com.groom.orbit.job.app.dto.JobDetailResponseDto;
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AiFeedbackService {
 
-  private final OpenAiService openAiService;
+  private final AiService aiService;
   private final InterestJobService interestJobService;
   private final ResumeQueryService resumeQueryService;
 
@@ -25,7 +25,7 @@ public class AiFeedbackService {
     String interestJobs = getInterestJobs(memberId);
     GetResumeResponseDto dto = resumeQueryService.getResume(memberId);
 
-    return openAiService.getFeedback(interestJobs, dto);
+    return aiService.getMemberFeedback(interestJobs, dto);
   }
 
   private String getInterestJobs(Long memberId) {

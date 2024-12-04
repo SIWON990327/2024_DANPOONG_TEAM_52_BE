@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import com.groom.orbit.ai.AiService;
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;
 import com.groom.orbit.resume.app.dto.GetResumeResponseDto;
 import com.groom.orbit.resume.app.dto.ResumeResponseDto;
@@ -20,14 +21,14 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class OpenAiService {
+public class OpenAiService implements AiService {
 
   private final ChatModel chatModel;
 
   @Value("classpath:/templates/ai-feedback-prompt.txt")
   private Resource aiFeedbackPrompt;
 
-  public GetFeedbackResponseDto getFeedback(String interestJobs, GetResumeResponseDto dto) {
+  public GetFeedbackResponseDto getMemberFeedback(String interestJobs, GetResumeResponseDto dto) {
     BeanOutputConverter<GetFeedbackResponseDto> converter =
         new BeanOutputConverter<>(GetFeedbackResponseDto.class);
     String format = converter.getFormat();
