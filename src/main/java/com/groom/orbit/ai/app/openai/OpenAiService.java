@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.groom.orbit.ai.app.AiService;
 import com.groom.orbit.ai.app.VectorService;
 import com.groom.orbit.ai.dao.vector.Vector;
-import com.groom.orbit.goal.app.dto.request.CreateGoalRequestDto;
+import com.groom.orbit.goal.app.dto.response.RecommendGoalListResponseDto;
 import com.groom.orbit.goal.app.dto.response.RecommendQuestListResponseDto;
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;
 import com.groom.orbit.resume.app.dto.GetResumeResponseDto;
@@ -66,8 +66,9 @@ public class OpenAiService implements AiService {
   }
 
   @Override
-  public CreateGoalRequestDto recommendGoal(Long memberId) {
-    BeanOutputConverter<CreateGoalRequestDto> converter = getConverter(CreateGoalRequestDto.class);
+  public RecommendGoalListResponseDto recommendGoal(Long memberId) {
+    BeanOutputConverter<RecommendGoalListResponseDto> converter =
+        getConverter(RecommendGoalListResponseDto.class);
     String format = converter.getFormat();
     List<Vector> similarVectors = vectorService.findSimilarVector(memberId);
 
