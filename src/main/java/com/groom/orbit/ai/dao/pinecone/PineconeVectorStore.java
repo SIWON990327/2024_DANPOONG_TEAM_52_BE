@@ -1,4 +1,4 @@
-package com.groom.orbit.ai.dao;
+package com.groom.orbit.ai.dao.pinecone;
 
 import static com.groom.orbit.ai.app.util.PineconeConst.INDEX_NAME;
 import static com.groom.orbit.ai.app.util.PineconeConst.INTEREST_JOB_NAMESPACE;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Struct;
 import com.groom.orbit.ai.app.util.PineconeVectorMapper;
+import com.groom.orbit.ai.dao.VectorStore;
 import com.groom.orbit.ai.dao.vector.Vector;
 
 import io.pinecone.clients.Index;
@@ -17,7 +18,7 @@ import io.pinecone.clients.Pinecone;
 import io.pinecone.unsigned_indices_model.QueryResponseWithUnsignedIndices;
 
 @Component
-public class PineconeVectorStore {
+public class PineconeVectorStore implements VectorStore {
 
   private final Index index;
   private final PineconeVectorMapper mapper;

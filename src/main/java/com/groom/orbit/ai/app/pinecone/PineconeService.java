@@ -20,26 +20,24 @@ import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.ai.app.dto.UpdateVectorGoalDto;
 import com.groom.orbit.ai.app.dto.UpdateVectorQuestDto;
 import com.groom.orbit.ai.app.util.PineconeVectorMapper;
-import com.groom.orbit.ai.dao.PineconeVectorStore;
+import com.groom.orbit.ai.dao.VectorStore;
+import com.groom.orbit.ai.dao.pinecone.PineconeVectorStore;
 import com.groom.orbit.ai.dao.vector.Vector;
 
 @Service
 public class PineconeService implements VectorService {
 
   private final PineconeVectorMapper mapper;
-  private final PineconeVectorStore vectorStore;
+  private final VectorStore vectorStore;
   private final PineconeEmbeddingService embeddingService;
-  private final PineconeVectorStore pineconeVectorStore;
 
   public PineconeService(
       PineconeVectorMapper mapper,
       PineconeVectorStore vectorStore,
-      PineconeEmbeddingService embeddingService,
-      PineconeVectorStore pineconeVectorStore) {
+      PineconeEmbeddingService embeddingService) {
     this.mapper = mapper;
     this.vectorStore = vectorStore;
     this.embeddingService = embeddingService;
-    this.pineconeVectorStore = pineconeVectorStore;
   }
 
   @Override
@@ -80,7 +78,7 @@ public class PineconeService implements VectorService {
   }
 
   private Optional<Vector> findVector(Long id) {
-    return pineconeVectorStore.findById(id);
+    return vectorStore.findById(id);
   }
 
   private void saveVector(Vector vector, Long id) {
