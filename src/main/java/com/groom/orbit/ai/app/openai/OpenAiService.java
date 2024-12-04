@@ -32,6 +32,8 @@ public class OpenAiService implements AiService {
   @Value("classpath:/templates/goal-recommend-prompt.txt")
   private Resource goalRecommendPrompt;
 
+  private static final String PARAMETER_LIST_DELIMITER = "\n  -";
+
   public GetFeedbackResponseDto getMemberFeedback(String interestJobs, GetResumeResponseDto dto) {
     BeanOutputConverter<GetFeedbackResponseDto> converter =
         getConverter(GetFeedbackResponseDto.class);
@@ -43,11 +45,11 @@ public class OpenAiService implements AiService {
             promptTemplate,
             Map.of(
                 "job", interestJobs,
-                "academy", convertDtoToString(dto.academyList()),
-                "career", convertDtoToString(dto.careerList()),
-                "qualification", convertDtoToString(dto.qualificationList()),
-                "experience", convertDtoToString(dto.experienceList()),
-                "etc", convertDtoToString(dto.etcList()),
+                "academy", convertResumeDtoToString(dto.academyList()),
+                "career", convertResumeDtoToString(dto.careerList()),
+                "qualification", convertResumeDtoToString(dto.qualificationList()),
+                "experience", convertResumeDtoToString(dto.experienceList()),
+                "etc", convertResumeDtoToString(dto.etcList()),
                 "format", format));
 
     return converter.convert(response);
@@ -66,8 +68,9 @@ public class OpenAiService implements AiService {
     return new BeanOutputConverter<>(converterClass);
   }
 
-  private String convertDtoToString(List<ResumeResponseDto> data) {
-    return String.join("\n", data.stream().map(ResumeResponseDto::title).toList());
+  private String convertResumeDtoToString(List<ResumeResponseDto> data) {
+    return String.join(
+        PARAMETER_LIST_DELIMITER, data.stream().map(ResumeResponseDto::title).toList());
   }
 
   private String callChatModel(PromptTemplate promptTemplate, Map<String, Object> variables) {
