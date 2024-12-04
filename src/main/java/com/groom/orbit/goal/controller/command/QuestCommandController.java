@@ -13,7 +13,6 @@ import com.groom.orbit.goal.app.dto.request.CreateQuestRequestDto;
 import com.groom.orbit.goal.app.dto.request.UpdateQuestRequestDto;
 import com.groom.orbit.goal.app.dto.request.UpdateQuestSequenceRequestDto;
 import com.groom.orbit.goal.app.dto.response.CreateQuestResponse;
-import com.groom.orbit.goal.app.dto.response.RecommendQuestResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,11 +44,11 @@ public class QuestCommandController {
     return ResponseDto.ok(questUpdateService.updateQuestSequence(memberId, dtos));
   }
 
-  @GetMapping("/recommend/{memberGoalId}")
-  public ResponseDto<RecommendQuestResponseDto> recommendQuest(
-      @AuthMember Long memberId, @PathVariable Long memberGoalId) {
-    return ResponseDto.ok(questCommandService.recommendQuest(memberId, memberGoalId));
-  }
+  //  @GetMapping("/recommend/{memberGoalId}")
+  //  public ResponseDto<RecommendQuestResponseDto> recommendQuest(
+  //      @AuthMember Long memberId, @PathVariable Long memberGoalId) {
+  //    return ResponseDto.ok(questCommandService.recommendQuest(memberId, memberGoalId));
+  //  }
 
   @DeleteMapping("/{quest_id}")
   public ResponseDto<CommonSuccessDto> deleteQuest(
