@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.goal.app.command.QuestRecommendService;
-import com.groom.orbit.goal.app.dto.response.RecommendQuestResponseDto;
+import com.groom.orbit.goal.app.dto.response.RecommendQuestListResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +18,8 @@ public class QuestRecommendController {
 
   private final QuestRecommendService questRecommendService;
 
-  @PostMapping("/recommend/{memberGoalId}")
-  public ResponseDto<RecommendQuestResponseDto> recommendQuest(@AuthMember Long memberId) {
+  @PostMapping("/recommend")
+  public ResponseDto<RecommendQuestListResponseDto> recommendQuest(@AuthMember Long memberId) {
     return ResponseDto.ok(questRecommendService.recommendQuest(memberId));
   }
 }
