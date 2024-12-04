@@ -1,4 +1,4 @@
-package com.groom.orbit.ai;
+package com.groom.orbit.ai.app;
 
 import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.ai.app.dto.UpdateVectorGoalDto;

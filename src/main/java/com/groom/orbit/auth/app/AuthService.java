@@ -3,7 +3,7 @@ package com.groom.orbit.auth.app;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.groom.orbit.ai.VectorService;
+import com.groom.orbit.ai.app.VectorService;
 import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.auth.app.dto.LoginResponseDto;
 import com.groom.orbit.auth.dao.AuthMemberRepository;

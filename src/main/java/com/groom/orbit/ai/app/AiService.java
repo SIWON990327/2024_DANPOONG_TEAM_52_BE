@@ -1,4 +1,4 @@
-package com.groom.orbit.ai;
+package com.groom.orbit.ai.app;
 
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;
 import com.groom.orbit.resume.app.dto.GetResumeResponseDto;

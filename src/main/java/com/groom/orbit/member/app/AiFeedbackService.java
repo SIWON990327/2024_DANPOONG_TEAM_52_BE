@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.groom.orbit.ai.AiService;
+import com.groom.orbit.ai.app.AiService;
 import com.groom.orbit.job.app.InterestJobService;
 import com.groom.orbit.job.app.dto.JobDetailResponseDto;
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;

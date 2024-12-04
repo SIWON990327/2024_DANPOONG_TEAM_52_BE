@@ -1,4 +1,4 @@
-package com.groom.orbit.ai.app;
+package com.groom.orbit.ai.app.openai;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import com.groom.orbit.ai.AiService;
+import com.groom.orbit.ai.app.AiService;
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;
 import com.groom.orbit.resume.app.dto.GetResumeResponseDto;
 import com.groom.orbit.resume.app.dto.ResumeResponseDto;

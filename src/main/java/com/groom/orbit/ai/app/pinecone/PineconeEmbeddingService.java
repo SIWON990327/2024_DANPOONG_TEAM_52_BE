@@ -1,4 +1,4 @@
-package com.groom.orbit.ai.app;
+package com.groom.orbit.ai.app.pinecone;
 
 import static com.groom.orbit.ai.app.util.PineconeConst.EMBEDDING_MODEL;
 import static com.groom.orbit.ai.app.util.PineconeConst.INPUT_TYPE_PARAMETER_KEY;

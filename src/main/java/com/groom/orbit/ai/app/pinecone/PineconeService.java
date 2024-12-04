@@ -1,4 +1,4 @@
-package com.groom.orbit.ai.app;
+package com.groom.orbit.ai.app.pinecone;
 
 import static com.groom.orbit.ai.app.util.PineconeConst.DEFAULT_MEMBER_NAME;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Struct.Builder;
 import com.google.protobuf.Value;
-import com.groom.orbit.ai.VectorService;
+import com.groom.orbit.ai.app.VectorService;
 import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.ai.app.dto.UpdateVectorGoalDto;
 import com.groom.orbit.ai.app.dto.UpdateVectorQuestDto;
