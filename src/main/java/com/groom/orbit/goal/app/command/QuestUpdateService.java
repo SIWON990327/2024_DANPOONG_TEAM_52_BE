@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.groom.orbit.ai.VectorService;
+import com.groom.orbit.ai.app.VectorService;
 import com.groom.orbit.ai.app.dto.UpdateVectorQuestDto;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;

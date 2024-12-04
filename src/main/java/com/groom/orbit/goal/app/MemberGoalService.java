@@ -1,14 +1,13 @@
 package com.groom.orbit.goal.app;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.groom.orbit.ai.VectorService;
+import com.groom.orbit.ai.app.VectorService;
 import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.ai.app.dto.UpdateVectorGoalDto;
 import com.groom.orbit.common.dto.CommonSuccessDto;
@@ -172,27 +171,6 @@ public class MemberGoalService {
                 new GetQuestResponseDto(
                     q.getQuestId(), q.getTitle(), q.getDeadline(), q.getIsComplete()))
         .toList();
-  }
-
-  public List<String> findMemberGoalNotCompleted(Long memberId) {
-    List<MemberGoal> memberGoals = memberGoalRepository.findNotCompletedByMemberId(memberId);
-    List<Long> startIds = getStartIds(memberGoals);
-
-    if (!startIds.isEmpty()) {
-      return getGoalTitle(startIds);
-    }
-
-    return new ArrayList<>();
-  }
-
-  private static List<Long> getStartIds(List<MemberGoal> memberGoals) {
-    return memberGoals.stream().map(mg -> mg.getGoal().getGoalId()).toList();
-  }
-
-  private List<String> getGoalTitle(List<Long> startIds) {
-    List<Goal> goals = goalQueryService.findNotIn(startIds);
-
-    return goals.stream().map(Goal::getTitle).toList();
   }
 
   public List<MemberGoal> findMemberGoalsByGoalId(Long goalId) {

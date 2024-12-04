@@ -1,4 +1,4 @@
-package com.groom.orbit.ai.dao;
+package com.groom.orbit.ai.dao.pinecone;
 
 import static com.groom.orbit.ai.app.util.PineconeConst.INDEX_NAME;
 import static com.groom.orbit.ai.app.util.PineconeConst.INTEREST_JOB_NAMESPACE;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Struct;
 import com.groom.orbit.ai.app.util.PineconeVectorMapper;
+import com.groom.orbit.ai.dao.VectorStore;
 import com.groom.orbit.ai.dao.vector.Vector;
 
 import io.pinecone.clients.Index;
@@ -17,10 +18,13 @@ import io.pinecone.clients.Pinecone;
 import io.pinecone.unsigned_indices_model.QueryResponseWithUnsignedIndices;
 
 @Component
-public class PineconeVectorStore {
+public class PineconeVectorStore implements VectorStore {
 
   private final Index index;
   private final PineconeVectorMapper mapper;
+
+  private static final int SIMILAR_VECTOR_COUNT = 11;
+  private static final int FIND_VECTOR_COUNT = 1;
 
   public PineconeVectorStore(Pinecone pinecone, PineconeVectorMapper mapper) {
     this.index = pinecone.getIndexConnection(INDEX_NAME);
@@ -33,7 +37,7 @@ public class PineconeVectorStore {
 
   public Optional<Vector> findById(Long id) {
     String findKey = getId(id);
-    QueryResponseWithUnsignedIndices response = getQueryByVectorId(findKey);
+    QueryResponseWithUnsignedIndices response = getByVectorId(findKey);
 
     return response.getMatchesList().stream()
         .filter(match -> findKey.equals(match.getId()))
@@ -41,8 +45,21 @@ public class PineconeVectorStore {
         .map(match -> mapper.fromStruct(match.getMetadata()));
   }
 
-  private QueryResponseWithUnsignedIndices getQueryByVectorId(String findKey) {
-    return index.queryByVectorId(1, findKey, INTEREST_JOB_NAMESPACE, false, true);
+  public List<Vector> findSimilar(List<Float> vector) {
+    QueryResponseWithUnsignedIndices response = getQueryByVector(vector);
+
+    return response.getMatchesList().stream()
+        .map(match -> mapper.fromStruct(match.getMetadata()))
+        .toList();
+  }
+
+  private QueryResponseWithUnsignedIndices getQueryByVector(List<Float> vector) {
+    return index.queryByVector(
+        SIMILAR_VECTOR_COUNT, vector, INTEREST_JOB_NAMESPACE, null, false, true);
+  }
+
+  private QueryResponseWithUnsignedIndices getByVectorId(String findKey) {
+    return index.queryByVectorId(FIND_VECTOR_COUNT, findKey, INTEREST_JOB_NAMESPACE, false, true);
   }
 
   private void upsert(Long key, List<Float> vector, Struct metadata) {
