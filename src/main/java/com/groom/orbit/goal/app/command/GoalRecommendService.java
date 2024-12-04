@@ -18,7 +18,7 @@ public class GoalRecommendService {
 
   public GetRecommendGoalResponseDto createRecommendGoal(Long memberId) {
     CreateGoalRequestDto dto = aiService.recommendGoal(memberId);
-    Goal goal = goalCommandService.createGoal(dto.title(), dto.category());
+    Goal goal = goalCommandService.upsert(dto.title(), dto.category());
 
     return new GetRecommendGoalResponseDto(goal.getGoalId(), dto.title(), dto.category());
   }
