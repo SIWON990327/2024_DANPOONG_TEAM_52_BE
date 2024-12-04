@@ -34,9 +34,4 @@ public class MemberGoalQueryController {
       @PathVariable("member_goal_id") Long memberGoalId) {
     return ResponseDto.ok(memberGoalService.findGoal(memberGoalId));
   }
-
-  @GetMapping("/recommend")
-  public ResponseDto<?> getRecommendedGoals(@AuthMember Long memberId) {
-    return ResponseDto.ok(memberGoalService.findMemberGoalNotCompleted(memberId));
-  }
 }

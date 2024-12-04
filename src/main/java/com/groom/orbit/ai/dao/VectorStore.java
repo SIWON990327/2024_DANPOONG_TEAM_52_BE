@@ -11,4 +11,6 @@ public interface VectorStore {
   void save(Long key, List<Float> vectors, Struct metadata);
 
   Optional<Vector> findById(Long id);
+
+  List<Vector> findSimilar(List<Float> vector);
 }

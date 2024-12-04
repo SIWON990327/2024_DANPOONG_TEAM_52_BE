@@ -8,5 +8,5 @@ public interface AiService {
 
   GetFeedbackResponseDto getMemberFeedback(String interestJobs, GetResumeResponseDto dto);
 
-  CreateGoalRequestDto recommendGoal(Long memberId, String goalList);
+  CreateGoalRequestDto recommendGoal(Long memberId);
 }

@@ -23,6 +23,8 @@ import com.groom.orbit.ai.app.util.PineconeVectorMapper;
 import com.groom.orbit.ai.dao.VectorStore;
 import com.groom.orbit.ai.dao.pinecone.PineconeVectorStore;
 import com.groom.orbit.ai.dao.vector.Vector;
+import com.groom.orbit.common.exception.CommonException;
+import com.groom.orbit.common.exception.ErrorCode;
 
 @Service
 public class PineconeService implements VectorService {
@@ -38,6 +40,20 @@ public class PineconeService implements VectorService {
     this.mapper = mapper;
     this.vectorStore = vectorStore;
     this.embeddingService = embeddingService;
+  }
+
+  @Override
+  public List<Vector> findSimilarVector(Long memberId) {
+    Vector vector =
+        findVector(memberId).orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_VECTOR));
+
+    String stringVector = mapper.mapToString(vector);
+    List<String> inputs = List.of(stringVector);
+    List<Embedding> embeddedInputs = embeddingService.embed(inputs);
+    List<Float> embeddedVector = toEmbeddingVector(embeddedInputs);
+    List<Vector> similarVectors = vectorStore.findSimilar(embeddedVector);
+
+    return similarVectors.stream().toList();
   }
 
   @Override
@@ -128,14 +144,28 @@ public class PineconeService implements VectorService {
   }
 
   private Vector createVector(
-      Long memberId, String memberName, List<String> interestJobs, String goal, String quest) {
+      Long memberId,
+      String memberName,
+      List<String> interestJobs,
+      List<String> goals,
+      List<String> quests) {
     return Vector.builder()
         .memberId(memberId)
         .memberName(memberName != null ? memberName : DEFAULT_MEMBER_NAME)
         .interestJobs(interestJobs != null ? interestJobs : Collections.emptyList())
-        .goals(goal != null ? List.of(goal) : Collections.emptyList())
-        .quests(quest != null ? List.of(quest) : Collections.emptyList())
+        .goals(goals)
+        .quests(quests)
         .build();
+  }
+
+  private Vector createVector(
+      Long memberId, String memberName, List<String> interestJobs, String goal, String quest) {
+    return createVector(
+        memberId,
+        memberName,
+        interestJobs,
+        goal != null ? List.of(goal) : Collections.emptyList(),
+        quest != null ? List.of(quest) : Collections.emptyList());
   }
 
   private Vector mergeVector(Vector existingVector, CreateVectorDto dto) {

@@ -23,6 +23,9 @@ public class PineconeVectorStore implements VectorStore {
   private final Index index;
   private final PineconeVectorMapper mapper;
 
+  private static final int SIMILAR_VECTOR_COUNT = 11;
+  private static final int FIND_VECTOR_COUNT = 1;
+
   public PineconeVectorStore(Pinecone pinecone, PineconeVectorMapper mapper) {
     this.index = pinecone.getIndexConnection(INDEX_NAME);
     this.mapper = mapper;
@@ -34,7 +37,7 @@ public class PineconeVectorStore implements VectorStore {
 
   public Optional<Vector> findById(Long id) {
     String findKey = getId(id);
-    QueryResponseWithUnsignedIndices response = getQueryByVectorId(findKey);
+    QueryResponseWithUnsignedIndices response = getByVectorId(findKey);
 
     return response.getMatchesList().stream()
         .filter(match -> findKey.equals(match.getId()))
@@ -42,8 +45,21 @@ public class PineconeVectorStore implements VectorStore {
         .map(match -> mapper.fromStruct(match.getMetadata()));
   }
 
-  private QueryResponseWithUnsignedIndices getQueryByVectorId(String findKey) {
-    return index.queryByVectorId(1, findKey, INTEREST_JOB_NAMESPACE, false, true);
+  public List<Vector> findSimilar(List<Float> vector) {
+    QueryResponseWithUnsignedIndices response = getQueryByVector(vector);
+
+    return response.getMatchesList().stream()
+        .map(match -> mapper.fromStruct(match.getMetadata()))
+        .toList();
+  }
+
+  private QueryResponseWithUnsignedIndices getQueryByVector(List<Float> vector) {
+    return index.queryByVector(
+        SIMILAR_VECTOR_COUNT, vector, INTEREST_JOB_NAMESPACE, null, false, true);
+  }
+
+  private QueryResponseWithUnsignedIndices getByVectorId(String findKey) {
+    return index.queryByVectorId(FIND_VECTOR_COUNT, findKey, INTEREST_JOB_NAMESPACE, false, true);
   }
 
   private void upsert(Long key, List<Float> vector, Struct metadata) {
