@@ -72,27 +72,6 @@ public class QuestCommandService {
     }
   }
 
-  //  public RecommendQuestResponseDto recommendQuest(Long memberId, Long goalId) {
-  //
-  //    Goal goal = goalQueryService.findGoal(goalId);
-  //    Member member = memberQueryService.findMember(memberId);
-  //    MemberGoal memberGoal = memberGoalService.findMemberGoal(memberId, goalId);
-  //
-  //    List<String> quest = questQueryService.getRecommendedQuests(memberGoal.getMemberGoalId());
-  //
-  //    String questList = String.join(",", quest);
-  //
-  //    QuestRecommendResponseDto questRecommendResponseDto =
-  //        openAiClient.createQuestRecommend(
-  //            QuestRecommendRequestDto.from(
-  //                member.getInterestJobs().get(0).getJob().getName(), goal.getTitle(),
-  // questList));
-  //
-  //    String title = questRecommendResponseDto.getAnswer();
-  //
-  //    return RecommendQuestResponseDto.from(title);
-  //  }
-
   public CommonSuccessDto deleteOneQuest(Long questId) {
 
     questRepository.delete(questQueryService.findQuest(questId));

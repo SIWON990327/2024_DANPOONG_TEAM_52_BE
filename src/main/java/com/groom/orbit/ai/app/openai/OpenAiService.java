@@ -16,6 +16,7 @@ import com.groom.orbit.ai.app.AiService;
 import com.groom.orbit.ai.app.VectorService;
 import com.groom.orbit.ai.dao.vector.Vector;
 import com.groom.orbit.goal.app.dto.request.CreateGoalRequestDto;
+import com.groom.orbit.goal.app.dto.response.RecommendQuestResponseDto;
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;
 import com.groom.orbit.resume.app.dto.GetResumeResponseDto;
 import com.groom.orbit.resume.app.dto.ResumeResponseDto;
@@ -36,6 +37,9 @@ public class OpenAiService implements AiService {
 
   @Value("classpath:/templates/goal-recommend-prompt.txt")
   private Resource goalRecommendPrompt;
+
+  @Value("classpath:/templates/quest-recommend-prompt.txt")
+  private Resource questRecommendPrompt;
 
   private static final String PARAMETER_NEW_LINE_LIST_DELIMITER = "\n  -";
   private static final String PARAMETER_LIST_DELIMITER = ",";
@@ -83,6 +87,38 @@ public class OpenAiService implements AiService {
                         othersVector.stream().flatMap(vector -> vector.goals().stream()).toList()),
                 "format", format));
     return converter.convert(response);
+  }
+
+  @Override
+  public RecommendQuestResponseDto recommendQuest(Long memberId) {
+    BeanOutputConverter<RecommendQuestResponseDto> converter =
+        getConverter(RecommendQuestResponseDto.class);
+    String format = converter.getFormat();
+    List<Vector> similarVectors = vectorService.findSimilarVector(memberId);
+
+    Vector myVector = similarVectors.getFirst();
+    List<Vector> othersVector = similarVectors.subList(1, similarVectors.size());
+
+    PromptTemplate promptTemplate = new PromptTemplate(goalRecommendPrompt);
+    String response =
+        callChatModel(
+            promptTemplate,
+            Map.of(
+                "job",
+                String.join(PARAMETER_LIST_DELIMITER, myVector.interestJobs()),
+                "myQuest",
+                String.join(PARAMETER_LIST_DELIMITER, myVector.quests()),
+                "questList",
+                String.join(
+                    PARAMETER_LIST_DELIMITER,
+                    othersVector.stream().flatMap(vector -> vector.goals().stream()).toList()),
+                "format",
+                format));
+    return converter.convert(response);
+  }
+
+  private PromptTemplate createPromptTemplate(Resource resource) {
+    return new PromptTemplate(resource);
   }
 
   private <T> BeanOutputConverter<T> getConverter(Class<T> converterClass) {
