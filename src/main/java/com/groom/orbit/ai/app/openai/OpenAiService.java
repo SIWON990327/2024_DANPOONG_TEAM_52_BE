@@ -13,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.groom.orbit.ai.app.AiService;
+import com.groom.orbit.goal.app.dto.request.CreateGoalRequestDto;
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;
 import com.groom.orbit.resume.app.dto.GetResumeResponseDto;
 import com.groom.orbit.resume.app.dto.ResumeResponseDto;
@@ -28,9 +29,12 @@ public class OpenAiService implements AiService {
   @Value("classpath:/templates/ai-feedback-prompt.txt")
   private Resource aiFeedbackPrompt;
 
+  @Value("classpath:/templates/goal-recommend-prompt.txt")
+  private Resource goalRecommendPrompt;
+
   public GetFeedbackResponseDto getMemberFeedback(String interestJobs, GetResumeResponseDto dto) {
     BeanOutputConverter<GetFeedbackResponseDto> converter =
-        new BeanOutputConverter<>(GetFeedbackResponseDto.class);
+        getConverter(GetFeedbackResponseDto.class);
     String format = converter.getFormat();
 
     PromptTemplate promptTemplate = new PromptTemplate(aiFeedbackPrompt);
@@ -47,6 +51,19 @@ public class OpenAiService implements AiService {
                 "format", format));
 
     return converter.convert(response);
+  }
+
+  @Override
+  public CreateGoalRequestDto recommendGoal(Long memberId, String goalList) {
+    BeanOutputConverter<CreateGoalRequestDto> converter = getConverter(CreateGoalRequestDto.class);
+    String format = converter.getFormat();
+
+    PromptTemplate promptTemplate = new PromptTemplate(goalRecommendPrompt);
+    return null;
+  }
+
+  private <T> BeanOutputConverter<T> getConverter(Class<T> converterClass) {
+    return new BeanOutputConverter<>(converterClass);
   }
 
   private String convertDtoToString(List<ResumeResponseDto> data) {

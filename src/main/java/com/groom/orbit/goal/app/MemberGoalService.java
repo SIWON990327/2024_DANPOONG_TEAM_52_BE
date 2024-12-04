@@ -175,7 +175,7 @@ public class MemberGoalService {
   }
 
   public List<String> findMemberGoalNotCompleted(Long memberId) {
-    List<MemberGoal> memberGoals = memberGoalRepository.findNotCompletedByMemberId(memberId);
+    List<MemberGoal> memberGoals = memberGoalRepository.findByIsComplete(memberId, false);
     List<Long> startIds = getStartIds(memberGoals);
 
     if (!startIds.isEmpty()) {

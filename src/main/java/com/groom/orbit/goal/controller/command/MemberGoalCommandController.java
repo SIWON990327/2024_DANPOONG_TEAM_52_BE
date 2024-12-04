@@ -47,29 +47,6 @@ public class MemberGoalCommandController {
     return ResponseDto.ok(memberGoalService.updateMemberGoal(memberId, memberGoalId, dto));
   }
 
-  //  @PostMapping("/recommend")
-  //  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  //  public ResponseDto<RecommendGoalResponseDto> creatRecommendGoal(@AuthMember Long memberId) {
-  //    Member member = memberQueryService.findMember(memberId);
-  //    String job = member.getInterestJobs().getFirst().getJob().getName();
-  //
-  //    List<String> goal = memberGoalService.findMemberGoalNotCompleted(memberId);
-  //
-  //    String goalList = String.join(", ", goal);
-  //
-  //    GoalRecommendResponseDto goalRecommendResponseDto =
-  //        openAiClient.createGoalRecommend(GoalRecommendRequestDto.from(job, goalList));
-  //
-  //    Goal newGoal =
-  //        Goal.create(
-  //            goalRecommendResponseDto.getAnswer().split(",")[0],
-  //            goalRecommendResponseDto.getAnswer().split(",")[1]);
-  //
-  //    goalRepository.save(newGoal);
-  //    return ResponseDto.ok(
-  //        RecommendGoalResponseDto.from(newGoal.getTitle(), newGoal.getCategory().toString()));
-  //  }
-
   @PatchMapping
   public ResponseDto<CommonSuccessDto> updateMemberGoalSequence(
       @AuthMember Long memberId,
