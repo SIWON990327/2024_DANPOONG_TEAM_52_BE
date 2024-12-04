@@ -16,6 +16,7 @@ import com.groom.orbit.ai.app.AiService;
 import com.groom.orbit.ai.app.VectorService;
 import com.groom.orbit.ai.dao.vector.Vector;
 import com.groom.orbit.goal.app.dto.request.CreateGoalRequestDto;
+import com.groom.orbit.goal.app.dto.response.RecommendQuestListResponseDto;
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;
 import com.groom.orbit.resume.app.dto.GetResumeResponseDto;
 import com.groom.orbit.resume.app.dto.ResumeResponseDto;
@@ -37,6 +38,9 @@ public class OpenAiService implements AiService {
   @Value("classpath:/templates/goal-recommend-prompt.txt")
   private Resource goalRecommendPrompt;
 
+  @Value("classpath:/templates/quest-recommend-prompt.txt")
+  private Resource questRecommendPrompt;
+
   private static final String PARAMETER_NEW_LINE_LIST_DELIMITER = "\n  -";
   private static final String PARAMETER_LIST_DELIMITER = ",";
 
@@ -45,7 +49,7 @@ public class OpenAiService implements AiService {
         getConverter(GetFeedbackResponseDto.class);
     String format = converter.getFormat();
 
-    PromptTemplate promptTemplate = new PromptTemplate(aiFeedbackPrompt);
+    PromptTemplate promptTemplate = createPromptTemplate(aiFeedbackPrompt);
     String response =
         callChatModel(
             promptTemplate,
@@ -70,23 +74,64 @@ public class OpenAiService implements AiService {
     Vector myVector = similarVectors.getFirst();
     List<Vector> othersVector = similarVectors.subList(1, similarVectors.size());
 
-    PromptTemplate promptTemplate = new PromptTemplate(goalRecommendPrompt);
+    PromptTemplate promptTemplate = createPromptTemplate(goalRecommendPrompt);
     String response =
         callChatModel(
             promptTemplate,
             Map.of(
-                "job", String.join(PARAMETER_LIST_DELIMITER, myVector.interestJobs()),
-                "myGoal", String.join(PARAMETER_LIST_DELIMITER, myVector.goals()),
+                "job",
+                String.join(PARAMETER_LIST_DELIMITER, myVector.interestJobs()),
+                "myGoal",
+                String.join(PARAMETER_LIST_DELIMITER, myVector.goals()),
                 "goalList",
-                    String.join(
-                        PARAMETER_LIST_DELIMITER,
-                        othersVector.stream().flatMap(vector -> vector.goals().stream()).toList()),
-                "format", format));
+                String.join(
+                    PARAMETER_LIST_DELIMITER,
+                    othersVector.stream().flatMap(vector -> vector.goals().stream()).toList()),
+                "format",
+                format));
     return converter.convert(response);
+  }
+
+  @Override
+  public RecommendQuestListResponseDto recommendQuest(Long memberId) {
+    BeanOutputConverter<RecommendQuestListResponseDto> converter =
+        getConverter(RecommendQuestListResponseDto.class);
+    String format = converter.getFormat();
+    List<Vector> similarVectors = vectorService.findSimilarVector(memberId);
+
+    Vector myVector = similarVectors.getFirst();
+    List<Vector> othersVector = similarVectors.subList(1, similarVectors.size());
+
+    PromptTemplate promptTemplate = createPromptTemplate(questRecommendPrompt);
+    String response =
+        callChatModel(
+            promptTemplate,
+            Map.of(
+                "job",
+                convertListToString(myVector.interestJobs()),
+                "goal",
+                String.join(PARAMETER_LIST_DELIMITER, myVector.goals()),
+                "myQuest",
+                convertListToString(myVector.quests()),
+                "questList",
+                convertListToString(
+                    othersVector.stream().flatMap(vector -> vector.goals().stream()).toList()),
+                "format",
+                format));
+    log.info("response is {}", response);
+    return converter.convert(response);
+  }
+
+  private PromptTemplate createPromptTemplate(Resource resource) {
+    return new PromptTemplate(resource);
   }
 
   private <T> BeanOutputConverter<T> getConverter(Class<T> converterClass) {
     return new BeanOutputConverter<>(converterClass);
+  }
+
+  private String convertListToString(List<String> data) {
+    return String.join(PARAMETER_LIST_DELIMITER, data);
   }
 
   private String convertResumeDtoToString(List<ResumeResponseDto> data) {
