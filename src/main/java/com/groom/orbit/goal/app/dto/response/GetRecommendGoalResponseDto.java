@@ -1,3 +1,6 @@
 package com.groom.orbit.goal.app.dto.response;
 
-public record GetRecommendGoalResponseDto(Long goalId, String title, String category) {}
+import java.util.List;
+
+public record GetRecommendGoalResponseDto(
+    Long goalId, String title, String category, List<String> descriptions) {}
