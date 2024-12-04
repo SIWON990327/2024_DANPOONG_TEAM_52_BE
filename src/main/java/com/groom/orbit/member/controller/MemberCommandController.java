@@ -19,11 +19,6 @@ public class MemberCommandController {
 
   private final MemberCommandService memberCommandService;
 
-  @PostMapping("/ai")
-  public ResponseDto<String> createAiFeedback(@AuthMember Long memberId) {
-    return ResponseDto.ok(memberCommandService.createAiFeedbackResponse(memberId));
-  }
-
   @PatchMapping
   public ResponseDto<CommonSuccessDto> updateMember(
       @AuthMember Long memberId, @RequestBody UpdateMemberRequestDto requestDto) {
