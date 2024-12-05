@@ -66,6 +66,8 @@ public class GoalSearchService {
             memberIds, category, pageable); // 해당 사용자들의 목표를 조회
 
     return memberGoals.map(
-        mg -> new GoalSearchResponseDto(mg.getGoal().getGoalId(), mg.getGoal().getTitle()));
+        memberGoal ->
+            new GoalSearchResponseDto(
+                memberGoal.getGoal().getGoalId(), memberGoal.getGoal().getTitle()));
   }
 }
