@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.groom.orbit.goal.dao.entity.GoalCategory;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
 
 public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
@@ -54,7 +55,7 @@ public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
           + " order by g.count desc")
   Page<MemberGoal> findByMemberIdsAndCategoryCountDesc(
       @Param("member_ids") List<Long> memberIds,
-      @Param("category") String category,
+      @Param("category") GoalCategory category,
       Pageable pageable);
 
   @Query(
@@ -66,6 +67,6 @@ public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
           + " order by g.createdAt desc")
   Page<MemberGoal> findByMemberIdsAndCategoryCreatedAtDesc(
       @Param("member_ids") List<Long> memberIds,
-      @Param("category") String category,
+      @Param("category") GoalCategory category,
       Pageable pageable);
 }

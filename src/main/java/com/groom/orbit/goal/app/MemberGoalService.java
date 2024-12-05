@@ -25,6 +25,7 @@ import com.groom.orbit.goal.app.query.GoalQueryService;
 import com.groom.orbit.goal.dao.MemberGoalRepository;
 import com.groom.orbit.goal.dao.QuestRepository;
 import com.groom.orbit.goal.dao.entity.Goal;
+import com.groom.orbit.goal.dao.entity.GoalCategory;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
 import com.groom.orbit.goal.dao.entity.Quest;
 import com.groom.orbit.member.app.MemberQueryService;
@@ -301,12 +302,13 @@ public class MemberGoalService {
 
     Pageable customPageable =
         Pageable.ofSize(pageable.getPageSize()).withPage(pageable.getPageNumber());
+    GoalCategory goalCategory = GoalCategory.from(category);
 
     if (order.equals("latest")) {
       return memberGoalRepository.findByMemberIdsAndCategoryCreatedAtDesc(
-          memberIds, category, customPageable);
+          memberIds, goalCategory, customPageable);
     }
     return memberGoalRepository.findByMemberIdsAndCategoryCountDesc(
-        memberIds, category, customPageable);
+        memberIds, goalCategory, customPageable);
   }
 }

@@ -20,7 +20,6 @@ import com.groom.orbit.goal.dao.entity.Goal;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
 import com.groom.orbit.goal.dao.entity.Quest;
 import com.groom.orbit.job.app.InterestJobService;
-import com.groom.orbit.member.dao.jpa.entity.Member;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,8 +57,9 @@ public class GoalSearchService {
 
   public Page<GoalSearchResponseDto> searchGoals(
       Long memberId, String category, List<Long> jobIds, Pageable pageable) {
-    List<Member> members = interestJobService.findMemberInInterestJob(jobIds); // 관심 직무가 같은 사용자 조회
-    List<Long> memberIds = new ArrayList<>(members.stream().map(Member::getId).toList());
+    List<Long> memberIds =
+        new ArrayList<>(
+            interestJobService.findMemberInInterestJob(jobIds).stream().distinct().toList());
     memberIds.remove(memberId);
     Page<MemberGoal> memberGoals =
         memberGoalService.findMemberGoalInMemberId(

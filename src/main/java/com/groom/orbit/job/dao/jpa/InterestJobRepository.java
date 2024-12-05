@@ -14,8 +14,8 @@ public interface InterestJobRepository extends JpaRepository<InterestJob, Intere
   List<InterestJob> findAllByMemberId(@Param("memberId") Long memberId);
 
   @Query(
-      "select ij from InterestJob ij"
-          + " join fetch ij.member m"
+      "select ij.memberId from InterestJob ij"
+          + " join ij.member m"
           + " where ij.jobId in :interest_job_names")
-  List<InterestJob> findByJobNames(@Param("interest_job_names") List<Long> interestJobNames);
+  List<Long> findByJobNames(@Param("interest_job_names") List<Long> interestJobNames);
 }
