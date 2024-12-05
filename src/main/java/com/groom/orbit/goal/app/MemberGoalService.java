@@ -286,4 +286,8 @@ public class MemberGoalService {
         copyMemberGoal.getCompletedDate().toLocalDate(),
         questDtos);
   }
+
+  public List<MemberGoal> findAllMemberGoal(Long goalId) {
+    return memberGoalRepository.findAllWithQuestsByGoalId(goalId);
+  }
 }
