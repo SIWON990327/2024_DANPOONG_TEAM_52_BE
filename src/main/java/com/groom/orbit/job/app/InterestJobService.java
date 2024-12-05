@@ -33,6 +33,11 @@ public class InterestJobService {
         .toList();
   }
 
+  public List<Member> findMemberInInterestJob(List<Long> interestJobIds) {
+    List<InterestJob> interestJobs = interestJobRepository.findByJobNames(interestJobIds);
+    return interestJobs.stream().map(InterestJob::getMember).toList();
+  }
+
   public void saveInterestJob(Long memberId, List<Job> jobs) {
     Member member = memberQueryService.findMember(memberId);
     member.addInterestJobs(jobs);
