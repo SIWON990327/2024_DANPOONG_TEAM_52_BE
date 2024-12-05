@@ -1,0 +1,3 @@
+package com.groom.orbit.goal.app.dto.response;
+
+public record GoalSearchResponseDto(Long goalId, String title) {}

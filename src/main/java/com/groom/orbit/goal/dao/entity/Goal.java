@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.groom.orbit.common.dao.entity.BaseTimeEntity;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
 
@@ -19,7 +20,7 @@ import lombok.Getter;
 @Entity
 @Getter
 @Table(name = "goal")
-public class Goal {
+public class Goal extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
