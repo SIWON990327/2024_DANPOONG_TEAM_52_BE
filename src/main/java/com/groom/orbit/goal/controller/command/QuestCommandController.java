@@ -12,7 +12,6 @@ import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.dto.ResponseDto;
 import com.groom.orbit.goal.app.command.QuestCommandService;
-import com.groom.orbit.goal.app.command.QuestUpdateService;
 import com.groom.orbit.goal.app.dto.request.CreateQuestRequestDto;
 import com.groom.orbit.goal.app.dto.request.UpdateQuestRequestDto;
 import com.groom.orbit.goal.app.dto.response.CreateQuestResponse;
@@ -25,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 public class QuestCommandController {
 
   private final QuestCommandService questCommandService;
-  private final QuestUpdateService questUpdateService;
 
   @PostMapping
   public ResponseDto<CreateQuestResponse> createQuest(
@@ -38,7 +36,7 @@ public class QuestCommandController {
       @AuthMember Long memberId,
       @PathVariable("quest_id") Long questId,
       @RequestBody UpdateQuestRequestDto dto) {
-    return ResponseDto.ok(questUpdateService.updateQuest(memberId, questId, dto));
+    return ResponseDto.ok(questCommandService.updateQuest(memberId, questId, dto));
   }
 
   @DeleteMapping("/{quest_id}")
