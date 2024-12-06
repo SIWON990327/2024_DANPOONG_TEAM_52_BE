@@ -39,12 +39,6 @@ public class QuestCommandService {
     return CreateQuestResponse.fromEntity(quest);
   }
 
-  private void saveVector(Long memberId, CreateQuestRequestDto dto) {
-    CreateVectorDto vectorDto =
-        CreateVectorDto.builder().memberId(memberId).quest(dto.title()).build();
-    vectorService.save(vectorDto);
-  }
-
   public CommonSuccessDto deleteOneQuest(Long memberId, Long questId) {
     Quest quest = questQueryService.findQuest(questId);
 
@@ -52,5 +46,11 @@ public class QuestCommandService {
     questRepository.delete(quest);
 
     return CommonSuccessDto.fromEntity(true);
+  }
+
+  private void saveVector(Long memberId, CreateQuestRequestDto dto) {
+    CreateVectorDto vectorDto =
+        CreateVectorDto.builder().memberId(memberId).quest(dto.title()).build();
+    vectorService.save(vectorDto);
   }
 }

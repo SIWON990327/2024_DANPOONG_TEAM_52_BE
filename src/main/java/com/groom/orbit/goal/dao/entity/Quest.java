@@ -82,10 +82,6 @@ public class Quest extends BaseTimeEntity {
     }
   }
 
-  public void updateSequence(int sequence) {
-    this.sequence = sequence;
-  }
-
   public static Quest copyQuest(String title, MemberGoal memberGoal) {
     Quest quest = new Quest();
     quest.title = title;
