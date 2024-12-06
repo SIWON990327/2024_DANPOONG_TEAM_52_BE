@@ -23,7 +23,6 @@ public class GoalRecommendService {
 
   public GetRecommendGoalListResponseDto createRecommendGoal(Long memberId) {
     RecommendGoalListResponseDto dtos = aiService.recommendGoal(memberId);
-    dtos.items().forEach(dto -> goalCommandService.upsert(dto.title(), dto.category()));
     List<Goal> newGoals =
         dtos.items().stream()
             .map(dto -> goalCommandService.upsert(dto.title(), dto.category()))
