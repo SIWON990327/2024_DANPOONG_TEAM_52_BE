@@ -55,4 +55,20 @@ public class Resume {
     this.startDate = requestDto.startDate();
     this.endDate = requestDto.endDate();
   }
+
+  public void createFromMemberGoal(MemberGoal memberGoal) {
+    this.memberGoal = memberGoal;
+    memberGoal.createResume();
+  }
+
+  public void validate(Long memberId) {
+    this.member.validateId(memberId);
+  }
+
+  public void delete() {
+    if (this.memberGoal == null) {
+      return;
+    }
+    this.memberGoal.deleteResume();
+  }
 }

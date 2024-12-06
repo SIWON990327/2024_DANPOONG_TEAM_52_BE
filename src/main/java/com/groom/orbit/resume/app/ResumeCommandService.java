@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ResumeCommendService {
+public class ResumeCommandService {
 
   private final ResumeRepository resumeRepository;
   private final MemberQueryService memberQueryService;
@@ -40,8 +40,9 @@ public class ResumeCommendService {
     return CommonSuccessDto.fromEntity(true);
   }
 
-  public CommonSuccessDto updateResume(Long resumeId, ResumeRequestDto requestDto) {
+  public CommonSuccessDto updateResume(Long memberId, Long resumeId, ResumeRequestDto requestDto) {
     Resume resume = findResume(resumeId);
+    resume.validate(memberId);
 
     resume.update(requestDto);
 
@@ -50,12 +51,9 @@ public class ResumeCommendService {
 
   public CommonSuccessDto deleteResume(Long memberId, Long resumeId) {
     Resume resume = findResume(resumeId);
+    resume.validate(memberId);
 
-    if (resume.getMemberGoal() != null) {
-      MemberGoal memberGoal =
-          memberGoalService.findByMemberIdAndId(memberId, resume.getMemberGoal().getMemberGoalId());
-      memberGoal.setIsResume(false);
-    }
+    resume.delete();
     resumeRepository.deleteById(resumeId);
 
     return CommonSuccessDto.fromEntity(true);
@@ -63,12 +61,12 @@ public class ResumeCommendService {
 
   public ResumeResponseDto createResumeFromMemberGoal(
       Long memberId, Long memberGoalId, ResumeRequestDto requestDto) {
-    Member member = memberQueryService.findMember(memberId);
     MemberGoal memberGoal = memberGoalService.findByMemberIdAndId(memberId, memberGoalId);
-
+    Member member = memberGoal.getMember();
     Resume resume = requestDto.toResume(member);
-    resume.setMemberGoal(memberGoal);
-    memberGoal.setIsResume(true);
+
+    resume.createFromMemberGoal(memberGoal);
+    resumeRepository.save(resume);
 
     return ResumeResponseDto.fromResume(resume);
   }

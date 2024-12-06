@@ -61,7 +61,6 @@ public class MemberGoal extends BaseTimeEntity {
   @Column(name = "completed_date")
   private LocalDateTime completedDate = LocalDateTime.of(2000, 12, 31, 00, 00);
 
-  @Setter
   @ColumnDefault("false")
   @Column(name = "is_resume")
   private Boolean isResume = false;
@@ -100,5 +99,13 @@ public class MemberGoal extends BaseTimeEntity {
         .isResume(false)
         .completedDate(this.completedDate)
         .build();
+  }
+
+  public void deleteResume() {
+    this.isResume = false;
+  }
+
+  public void createResume() {
+    this.isResume = true;
   }
 }
