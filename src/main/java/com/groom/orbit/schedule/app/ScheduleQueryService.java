@@ -24,22 +24,21 @@ public class ScheduleQueryService {
   private final ScheduleRepository scheduleRepository;
   private final QuestRepository questRepository;
 
-  public Schedule findById(Long scheduleId) {
+  public Schedule findSchedule(Long scheduleId) {
     return scheduleRepository
         .findById(scheduleId)
         .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_SCHEDULE));
   }
 
   public GetCalendarResponseDto getCalendar(Long memberId, Integer month, Integer year) {
-
     List<GetScheduleResponseDto> scheduleResponseDtoList =
         scheduleRepository.findAllByMonthAndMemberId(memberId, month, year).stream()
-            .map(schedule -> GetScheduleResponseDto.fromSchedule(schedule))
+            .map(GetScheduleResponseDto::fromSchedule)
             .toList();
 
     List<GetQuestResponseDto> questResponseDtoList =
         questRepository.findAllByMonthAndMemberId(memberId, month, year).stream()
-            .map(quest -> GetQuestResponseDto.fromQuest(quest))
+            .map(GetQuestResponseDto::fromQuest)
             .toList();
 
     return GetCalendarResponseDto.fromCalendarList(questResponseDtoList, scheduleResponseDtoList);
