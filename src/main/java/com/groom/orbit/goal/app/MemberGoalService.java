@@ -295,6 +295,7 @@ public class MemberGoalService {
     return memberGoalRepository.findAllWithQuestsByGoalId(goalId);
   }
 
+  /** TODO 동적 쿼리 처리 -> querydsl */
   public Page<MemberGoal> findMemberGoalInMemberId(
       List<Long> memberIds, String category, Pageable pageable) {
     String order =
@@ -304,16 +305,13 @@ public class MemberGoalService {
         Pageable.ofSize(pageable.getPageSize()).withPage(pageable.getPageNumber());
     GoalCategory goalCategory = GoalCategory.from(category);
 
-    if (order.equals("latest")) {
-      if (memberIds.isEmpty()) {
-        return memberGoalRepository.findByCategoryCreatedAtDesc(goalCategory, customPageable);
-      }
-      return memberGoalRepository.findByMemberIdsAndCategoryCreatedAtDesc(
-          memberIds, goalCategory, customPageable);
+    if (memberIds.isEmpty()) {
+      return Page.empty(pageable);
     }
 
-    if (memberIds.isEmpty()) {
-      return memberGoalRepository.findByCategoryCountAtDesc(goalCategory, customPageable);
+    if (order.equals("latest")) {
+      return memberGoalRepository.findByMemberIdsAndCategoryCreatedAtDesc(
+          memberIds, goalCategory, customPageable);
     }
     return memberGoalRepository.findByMemberIdsAndCategoryCountDesc(
         memberIds, goalCategory, customPageable);
