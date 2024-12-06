@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.groom.orbit.goal.dao.entity.MemberGoal;
 import com.groom.orbit.member.dao.jpa.entity.Member;
 import com.groom.orbit.resume.app.dto.ResumeRequestDto;
@@ -15,6 +17,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 @Table(name = "resume")
 public class Resume {
 
@@ -49,11 +52,21 @@ public class Resume {
   private MemberGoal memberGoal;
 
   public void update(ResumeRequestDto requestDto) {
-    this.resumeCategory = requestDto.resumeCategory();
-    this.title = requestDto.title();
-    this.content = requestDto.content();
-    this.startDate = requestDto.startDate();
-    this.endDate = requestDto.endDate();
+    if (requestDto.resumeCategory() != null) {
+      this.resumeCategory = requestDto.resumeCategory();
+    }
+    if (requestDto.title() != null) {
+      this.title = requestDto.title();
+    }
+    if (requestDto.content() != null) {
+      this.content = requestDto.content();
+    }
+    if (requestDto.startDate() != null) {
+      this.startDate = requestDto.startDate();
+    }
+    if (requestDto.endDate() != null) {
+      this.endDate = requestDto.endDate();
+    }
   }
 
   public void createFromMemberGoal(MemberGoal memberGoal) {
