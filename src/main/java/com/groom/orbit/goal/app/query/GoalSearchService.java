@@ -57,13 +57,7 @@ public class GoalSearchService {
 
   public Page<GoalSearchResponseDto> searchGoals(
       Long memberId, String category, List<Long> jobIds, Pageable pageable) {
-    List<Long> memberIds =
-        new ArrayList<>(
-            interestJobService.findMemberInInterestJob(jobIds).stream().distinct().toList());
-    memberIds.remove(memberId);
-    Page<MemberGoal> memberGoals =
-        memberGoalService.findMemberGoalInMemberId(
-            memberIds, category, pageable); // 해당 사용자들의 목표를 조회
+    Page<MemberGoal> memberGoals = findMemberGoal(memberId, category, jobIds, pageable);
 
     return memberGoals.map(
         memberGoal ->
@@ -71,5 +65,18 @@ public class GoalSearchService {
                 memberGoal.getGoal().getGoalId(),
                 memberGoal.getGoal().getTitle(),
                 memberGoal.getGoal().getCategory().name()));
+  }
+
+  private Page<MemberGoal> findMemberGoal(
+      Long memberId, String category, List<Long> jobIds, Pageable pageable) {
+    if (jobIds == null) {
+      return memberGoalService.findMemberGoal(category, pageable);
+    }
+    List<Long> memberIds =
+        new ArrayList<>(
+            interestJobService.findMemberInInterestJob(jobIds).stream().distinct().toList());
+    memberIds.remove(memberId);
+
+    return memberGoalService.findMemberGoalInMemberId(memberIds, category, pageable);
   }
 }

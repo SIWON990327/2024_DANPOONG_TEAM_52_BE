@@ -295,19 +295,34 @@ public class MemberGoalService {
     return memberGoalRepository.findAllWithQuestsByGoalId(goalId);
   }
 
+  /** 처음부터 jobIds를 선택하지 않은 경우 */
+  public Page<MemberGoal> findMemberGoal(String category, Pageable pageable) {
+    String order =
+        pageable.getSort().stream().findFirst().map(Order::getProperty).orElseGet(() -> "latest");
+    Pageable customPageable =
+        Pageable.ofSize(pageable.getPageSize()).withPage(pageable.getPageNumber());
+    GoalCategory goalCategory = GoalCategory.from(category);
+
+    if (order.equals("latest")) {
+      return memberGoalRepository.findByCategoryCreatedAtDesc(goalCategory, customPageable);
+    }
+    return memberGoalRepository.findByCategoryCountAtDesc(goalCategory, customPageable);
+  }
+
   /** TODO 동적 쿼리 처리 -> querydsl */
   public Page<MemberGoal> findMemberGoalInMemberId(
       List<Long> memberIds, String category, Pageable pageable) {
+
+    if (memberIds.isEmpty()) {
+      return Page.empty(pageable);
+    }
+
     String order =
         pageable.getSort().stream().findFirst().map(Order::getProperty).orElseGet(() -> "latest");
 
     Pageable customPageable =
         Pageable.ofSize(pageable.getPageSize()).withPage(pageable.getPageNumber());
     GoalCategory goalCategory = GoalCategory.from(category);
-
-    if (memberIds.isEmpty()) {
-      return Page.empty(pageable);
-    }
 
     if (order.equals("latest")) {
       return memberGoalRepository.findByMemberIdsAndCategoryCreatedAtDesc(
