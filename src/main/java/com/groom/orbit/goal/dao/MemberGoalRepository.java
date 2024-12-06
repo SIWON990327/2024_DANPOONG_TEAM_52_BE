@@ -82,6 +82,7 @@ public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
   @Query(
       "select mg from MemberGoal mg"
           + " join fetch mg.goal g"
+          + " join mg.member m"
           + " where (:category is null or g.category = :category)"
           + " group by g.goalId"
           + " order by g.createdAt desc")
