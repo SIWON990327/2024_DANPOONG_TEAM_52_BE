@@ -119,7 +119,6 @@ public class OpenAiService implements AiService {
                     othersVector.stream().flatMap(vector -> vector.goals().stream()).toList()),
                 "format",
                 format));
-    log.info("response is {}", response);
     return converter.convert(response);
   }
 
