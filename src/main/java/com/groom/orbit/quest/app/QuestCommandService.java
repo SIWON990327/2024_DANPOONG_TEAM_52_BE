@@ -1,4 +1,4 @@
-package com.groom.orbit.goal.app.command;
+package com.groom.orbit.quest.app;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,13 +8,12 @@ import com.groom.orbit.ai.app.dto.CreateVectorDto;
 import com.groom.orbit.ai.app.dto.UpdateVectorQuestDto;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.goal.app.MemberGoalService;
-import com.groom.orbit.goal.app.dto.request.CreateQuestRequestDto;
-import com.groom.orbit.goal.app.dto.request.UpdateQuestRequestDto;
-import com.groom.orbit.goal.app.dto.response.CreateQuestResponse;
-import com.groom.orbit.goal.app.query.QuestQueryService;
-import com.groom.orbit.goal.dao.QuestRepository;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
-import com.groom.orbit.goal.dao.entity.Quest;
+import com.groom.orbit.quest.app.dto.request.CreateQuestRequestDto;
+import com.groom.orbit.quest.app.dto.request.UpdateQuestRequestDto;
+import com.groom.orbit.quest.app.dto.response.CreateQuestResponse;
+import com.groom.orbit.quest.dao.QuestRepository;
+import com.groom.orbit.quest.dao.entity.Quest;
 
 import lombok.RequiredArgsConstructor;
 

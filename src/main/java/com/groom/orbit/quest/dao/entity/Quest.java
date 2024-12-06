@@ -1,4 +1,4 @@
-package com.groom.orbit.goal.dao.entity;
+package com.groom.orbit.quest.dao.entity;
 
 import java.time.LocalDate;
 
@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.groom.orbit.common.dao.entity.BaseTimeEntity;
+import com.groom.orbit.goal.dao.entity.MemberGoal;
 import com.groom.orbit.member.dao.jpa.entity.Member;
 
 import lombok.Getter;
