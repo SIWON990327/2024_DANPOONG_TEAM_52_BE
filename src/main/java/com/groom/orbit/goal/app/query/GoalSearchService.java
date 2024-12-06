@@ -18,8 +18,8 @@ import com.groom.orbit.goal.app.dto.response.GoalSearchDetailResponseDto;
 import com.groom.orbit.goal.app.dto.response.GoalSearchResponseDto;
 import com.groom.orbit.goal.dao.entity.Goal;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
-import com.groom.orbit.goal.dao.entity.Quest;
 import com.groom.orbit.job.app.InterestJobService;
+import com.groom.orbit.quest.dao.entity.Quest;
 
 import lombok.RequiredArgsConstructor;
 

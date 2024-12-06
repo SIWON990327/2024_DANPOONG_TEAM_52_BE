@@ -1,4 +1,4 @@
-package com.groom.orbit.goal.controller.command;
+package com.groom.orbit.quest.controller;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.groom.orbit.common.annotation.AuthMember;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.dto.ResponseDto;
-import com.groom.orbit.goal.app.command.QuestCommandService;
-import com.groom.orbit.goal.app.dto.request.CreateQuestRequestDto;
-import com.groom.orbit.goal.app.dto.request.UpdateQuestRequestDto;
-import com.groom.orbit.goal.app.dto.response.CreateQuestResponse;
+import com.groom.orbit.quest.app.QuestCommandService;
+import com.groom.orbit.quest.app.dto.request.CreateQuestRequestDto;
+import com.groom.orbit.quest.app.dto.request.UpdateQuestRequestDto;
+import com.groom.orbit.quest.app.dto.response.CreateQuestResponse;
 
 import lombok.RequiredArgsConstructor;
 

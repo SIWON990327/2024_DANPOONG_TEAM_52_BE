@@ -1,4 +1,4 @@
-package com.groom.orbit.goal.app.query;
+package com.groom.orbit.quest.app;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.goal.app.MemberGoalService;
-import com.groom.orbit.goal.app.dto.response.GetQuestResponseDto;
-import com.groom.orbit.goal.dao.QuestRepository;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
-import com.groom.orbit.goal.dao.entity.Quest;
+import com.groom.orbit.quest.app.dto.response.GetQuestResponseDto;
+import com.groom.orbit.quest.dao.QuestRepository;
+import com.groom.orbit.quest.dao.entity.Quest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,10 +30,6 @@ public class QuestQueryService {
     return questRepository
         .findById(questId)
         .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_QUEST));
-  }
-
-  public List<Quest> findQuestsByMemberAndGoal(Long memberId, Long goalId) {
-    return questRepository.findByMemberIdAndMemberGoalId(memberId, goalId);
   }
 
   public List<Quest> findQuestsByMemberAndGoal(Long memberGoalId) {
@@ -56,10 +52,6 @@ public class QuestQueryService {
 
   public int getQuestCountsByGoalId(Long goalId) {
     return questRepository.getCountByGoalId(goalId);
-  }
-
-  public List<Quest> findByQuestIdIn(List<Long> questIds) {
-    return questRepository.findByQuestIdIn(questIds);
   }
 
   public List<String> getRecommendedQuests(Long memberGoalId) {
