@@ -37,13 +37,12 @@ public class ScheduleCommandService {
     return CommonSuccessDto.fromEntity(true);
   }
 
-  public CommonSuccessDto updateSchedule(
-      Long memberId, Long scheduleId, ScheduleRequestDto requestDto) {
+  public CommonSuccessDto updateSchedule(Long memberId, Long scheduleId, ScheduleRequestDto dto) {
     Schedule schedule = scheduleQueryService.findSchedule(scheduleId);
     Member member = schedule.getMember();
     member.validateId(memberId);
 
-    schedule.updateSchedule(requestDto);
+    schedule.update(dto.content(), dto.startDate(), dto.endDate());
 
     return CommonSuccessDto.fromEntity(true);
   }
@@ -53,7 +52,7 @@ public class ScheduleCommandService {
     Member member = schedule.getMember();
     member.validateId(memberId);
 
-    scheduleRepository.deleteById(scheduleId);
+    scheduleRepository.delete(schedule);
 
     return CommonSuccessDto.fromEntity(true);
   }
