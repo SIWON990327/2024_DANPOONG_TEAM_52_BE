@@ -44,8 +44,7 @@ public class GoalSearchService {
             .map(Quest::getTitle)
             .toList();
 
-    return new GoalSearchDetailResponseDto(
-        goal.getCategory().getCategory(), goal.getTitle(), questTitles);
+    return new GoalSearchDetailResponseDto(goal.getCategory().name(), goal.getTitle(), questTitles);
   }
 
   private static Goal findGoal(List<MemberGoal> memberGoals) {
