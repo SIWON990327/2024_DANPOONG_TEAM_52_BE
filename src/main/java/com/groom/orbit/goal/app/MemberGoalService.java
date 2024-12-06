@@ -305,8 +305,15 @@ public class MemberGoalService {
     GoalCategory goalCategory = GoalCategory.from(category);
 
     if (order.equals("latest")) {
+      if (memberIds.isEmpty()) {
+        return memberGoalRepository.findByCategoryCreatedAtDesc(goalCategory, customPageable);
+      }
       return memberGoalRepository.findByMemberIdsAndCategoryCreatedAtDesc(
           memberIds, goalCategory, customPageable);
+    }
+
+    if (memberIds.isEmpty()) {
+      return memberGoalRepository.findByCategoryCountAtDesc(goalCategory, customPageable);
     }
     return memberGoalRepository.findByMemberIdsAndCategoryCountDesc(
         memberIds, goalCategory, customPageable);
