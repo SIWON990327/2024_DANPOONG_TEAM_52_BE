@@ -64,7 +64,8 @@ public class GoalSearchService {
             new GoalSearchResponseDto(
                 memberGoal.getGoal().getGoalId(),
                 memberGoal.getGoal().getTitle(),
-                memberGoal.getGoal().getCategory().name()));
+                memberGoal.getGoal().getCategory().name(),
+                memberGoal.getGoal().getCount()));
   }
 
   private Page<MemberGoal> findMemberGoal(
