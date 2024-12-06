@@ -46,6 +46,13 @@ public class MemberGoalService {
   private final QuestRepository questRepository;
 
   @Transactional(readOnly = true)
+  public MemberGoal findByMemberIdAndId(Long memberId, Long memberGoalId) {
+    return memberGoalRepository
+        .findById(memberId, memberGoalId)
+        .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MEMBER_GOAL));
+  }
+
+  @Transactional(readOnly = true)
   public MemberGoal findMemberGoal(Long memberId, Long goalId) {
 
     return memberGoalRepository

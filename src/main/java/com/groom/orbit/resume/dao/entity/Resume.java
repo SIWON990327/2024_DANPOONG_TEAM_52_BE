@@ -48,7 +48,7 @@ public class Resume {
   @JoinColumn(name = "member_goal_id")
   private MemberGoal memberGoal;
 
-  public void updateResume(ResumeRequestDto requestDto) {
+  public void update(ResumeRequestDto requestDto) {
     this.resumeCategory = requestDto.resumeCategory();
     this.title = requestDto.title();
     this.content = requestDto.content();

@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.groom.orbit.common.dto.CommonSuccessDto;
 import com.groom.orbit.common.exception.CommonException;
 import com.groom.orbit.common.exception.ErrorCode;
-import com.groom.orbit.goal.dao.MemberGoalRepository;
+import com.groom.orbit.goal.app.MemberGoalService;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
 import com.groom.orbit.member.app.MemberQueryService;
 import com.groom.orbit.member.dao.jpa.entity.Member;
@@ -18,16 +18,21 @@ import com.groom.orbit.resume.dao.entity.Resume;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class ResumeCommendService {
 
   private final ResumeRepository resumeRepository;
   private final MemberQueryService memberQueryService;
-  private final MemberGoalRepository memberGoalRepository;
+  private final MemberGoalService memberGoalService;
+
+  public Resume findResume(Long resumeId) {
+    return resumeRepository
+        .findById(resumeId)
+        .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESUME));
+  }
 
   public CommonSuccessDto createResume(Long memberId, ResumeRequestDto request) {
-
     Member member = memberQueryService.findMember(memberId);
 
     resumeRepository.save(request.toResume(member));
@@ -36,57 +41,34 @@ public class ResumeCommendService {
   }
 
   public CommonSuccessDto updateResume(Long resumeId, ResumeRequestDto requestDto) {
+    Resume resume = findResume(resumeId);
 
-    Resume resume =
-        resumeRepository
-            .findById(resumeId)
-            .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESUME));
-
-    resume.updateResume(requestDto);
-
-    resumeRepository.save(resume);
+    resume.update(requestDto);
 
     return CommonSuccessDto.fromEntity(true);
   }
 
   public CommonSuccessDto deleteResume(Long memberId, Long resumeId) {
-
-    Resume resume =
-        resumeRepository
-            .findById(resumeId)
-            .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RESUME));
+    Resume resume = findResume(resumeId);
 
     if (resume.getMemberGoal() != null) {
       MemberGoal memberGoal =
-          memberGoalRepository
-              .findById(memberId, resume.getMemberGoal().getMemberGoalId())
-              .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MEMBER_GOAL));
+          memberGoalService.findByMemberIdAndId(memberId, resume.getMemberGoal().getMemberGoalId());
       memberGoal.setIsResume(false);
-      memberGoalRepository.save(memberGoal);
     }
-
     resumeRepository.deleteById(resumeId);
+
     return CommonSuccessDto.fromEntity(true);
   }
 
   public ResumeResponseDto createResumeFromMemberGoal(
       Long memberId, Long memberGoalId, ResumeRequestDto requestDto) {
-
     Member member = memberQueryService.findMember(memberId);
-
-    MemberGoal memberGoal =
-        memberGoalRepository
-            .findById(memberId, memberGoalId)
-            .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_MEMBER_GOAL));
+    MemberGoal memberGoal = memberGoalService.findByMemberIdAndId(memberId, memberGoalId);
 
     Resume resume = requestDto.toResume(member);
-
     resume.setMemberGoal(memberGoal);
-
     memberGoal.setIsResume(true);
-
-    resumeRepository.save(resume);
-    memberGoalRepository.save(memberGoal);
 
     return ResumeResponseDto.fromResume(resume);
   }
