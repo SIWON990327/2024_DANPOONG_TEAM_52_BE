@@ -42,8 +42,8 @@ public class QuestCommandService {
 
   public CommonSuccessDto deleteOneQuest(Long memberId, Long questId) {
     Quest quest = questQueryService.findQuest(questId);
-
     quest.validateMember(memberId);
+
     questRepository.delete(quest);
 
     return CommonSuccessDto.fromEntity(true);

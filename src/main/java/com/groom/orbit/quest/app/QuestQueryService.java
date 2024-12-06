@@ -54,10 +54,6 @@ public class QuestQueryService {
     return questRepository.getCountByGoalId(goalId);
   }
 
-  public List<Quest> findByQuestIdIn(List<Long> questIds) {
-    return questRepository.findByQuestIdIn(questIds);
-  }
-
   public List<String> getRecommendedQuests(Long memberGoalId) {
     MemberGoal memberGoal = memberGoalService.findMemberGoal(memberGoalId);
     Set<Quest> myQuests = new HashSet<>(memberGoal.getQuests());
