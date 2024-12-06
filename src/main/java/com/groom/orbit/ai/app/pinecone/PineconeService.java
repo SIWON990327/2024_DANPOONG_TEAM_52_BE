@@ -86,6 +86,7 @@ public class PineconeService implements VectorService {
     saveVector(vector, dto.memberId());
   }
 
+  @Async
   @Override
   public void updateQuest(UpdateVectorQuestDto dto) {
     Vector vector =
