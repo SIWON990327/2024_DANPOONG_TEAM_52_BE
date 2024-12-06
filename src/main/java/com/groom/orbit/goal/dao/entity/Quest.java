@@ -15,8 +15,6 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.groom.orbit.common.dao.entity.BaseTimeEntity;
-import com.groom.orbit.common.exception.CommonException;
-import com.groom.orbit.common.exception.ErrorCode;
 import com.groom.orbit.member.dao.jpa.entity.Member;
 
 import lombok.Getter;
@@ -48,20 +46,11 @@ public class Quest extends BaseTimeEntity {
 
   public static Quest create(
       String title, MemberGoal memberGoal, LocalDate deadline, int newSequence) {
-    Quest quest = new Quest();
-    quest.title = title;
-    quest.memberGoal = memberGoal;
+    Quest quest = copyQuest(title, memberGoal);
     quest.sequence = newSequence;
     quest.deadline = deadline;
 
     return quest;
-  }
-
-  public void decreaseSequence() {
-    this.sequence -= 1;
-    if (this.sequence <= 0) {
-      throw new CommonException(ErrorCode.INVALID_STATE);
-    }
   }
 
   public void validateMember(Long memberId) {

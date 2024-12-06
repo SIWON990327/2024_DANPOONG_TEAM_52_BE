@@ -47,6 +47,6 @@ public class QuestCommandController {
   @DeleteMapping("/{quest_id}")
   public ResponseDto<CommonSuccessDto> deleteQuest(
       @AuthMember Long memberId, @PathVariable("quest_id") Long questId) {
-    return ResponseDto.ok(questCommandService.deleteOneQuest(questId));
+    return ResponseDto.ok(questCommandService.deleteOneQuest(memberId, questId));
   }
 }
