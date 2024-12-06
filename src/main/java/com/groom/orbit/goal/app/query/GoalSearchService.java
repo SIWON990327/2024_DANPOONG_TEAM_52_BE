@@ -68,6 +68,8 @@ public class GoalSearchService {
     return memberGoals.map(
         memberGoal ->
             new GoalSearchResponseDto(
-                memberGoal.getGoal().getGoalId(), memberGoal.getGoal().getTitle()));
+                memberGoal.getGoal().getGoalId(),
+                memberGoal.getGoal().getTitle(),
+                memberGoal.getGoal().getCategory().name()));
   }
 }
