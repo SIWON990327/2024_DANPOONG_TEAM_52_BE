@@ -33,9 +33,10 @@ public class QuestCommandService {
   /** TODO join 최적화 */
   public CreateQuestResponse createQuest(Long memberId, CreateQuestRequestDto dto) {
     MemberGoal memberGoal = memberGoalService.findMemberGoal(memberId, dto.goalId());
+    memberGoal.validateMember(memberId);
+
     int newQuestSequence = questQueryService.getQuestCountsByGoalId(dto.goalId()) + 1;
     Quest quest = Quest.create(dto.title(), memberGoal, dto.deadline(), newQuestSequence);
-
     questRepository.save(quest);
     saveVector(memberId, dto);
 
