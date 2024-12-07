@@ -6,4 +6,8 @@ import lombok.Builder;
 
 @Builder
 public record CreateVectorDto(
-    Long memberId, String memberName, List<String> interestJobs, String goal, String quest) {}
+    Long memberId,
+    String memberName,
+    List<String> interestJobs,
+    List<String> goals,
+    List<String> quests) {}
