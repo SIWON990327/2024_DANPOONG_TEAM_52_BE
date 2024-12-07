@@ -1,5 +1,6 @@
 package com.groom.orbit.goal.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.groom.orbit.goal.dao.entity.GoalCategory;
 import com.groom.orbit.goal.dao.entity.MemberGoal;
+import com.groom.orbit.member.dao.jpa.entity.Member;
 
 public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
 
@@ -71,13 +73,17 @@ public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
       Pageable pageable);
 
   @Query(
-      "select mg from MemberGoal mg"
-          + " join fetch mg.goal g"
-          + " where (:category is null or g.category = :category)"
-          + " group by g.goalId"
-          + " order by g.count desc")
-  Page<MemberGoal> findByCategoryCountAtDesc(
-      @Param("category") GoalCategory category, Pageable pageable);
+      """
+        select mg
+        from MemberGoal mg
+        where mg.member = :member and
+              mg.isComplete = true and
+              mg.completedDate between :yesterdayStart and :yesterdayEnd
+              """)
+  List<MemberGoal> findCompleteMemberGoalYesterday(
+      @Param("member") Member member,
+      @Param("yesterdayStart") LocalDateTime yesterdayStart,
+      @Param("yesterdayEnd") LocalDateTime yesterdayEnd);
 
   @Query(
       "select mg from MemberGoal mg"
@@ -87,5 +93,14 @@ public interface MemberGoalRepository extends JpaRepository<MemberGoal, Long> {
           + " group by g.goalId"
           + " order by g.createdAt desc")
   Page<MemberGoal> findByCategoryCreatedAtDesc(
+      @Param("category") GoalCategory category, Pageable pageable);
+
+  @Query(
+      "select mg from MemberGoal mg"
+          + " join fetch mg.goal g"
+          + " where (:category is null or g.category = :category)"
+          + " group by g.goalId"
+          + " order by g.count desc")
+  Page<MemberGoal> findByCategoryCountAtDesc(
       @Param("category") GoalCategory category, Pageable pageable);
 }
