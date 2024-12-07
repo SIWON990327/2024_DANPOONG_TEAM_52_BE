@@ -54,21 +54,18 @@ public class Quest extends BaseTimeEntity {
     return quest;
   }
 
+  public static Quest copyQuest(String title, MemberGoal memberGoal) {
+    Quest quest = new Quest();
+    quest.title = title;
+    quest.memberGoal = memberGoal;
+    memberGoal.getQuests().add(quest);
+
+    return quest;
+  }
+
   public void validateMember(Long memberId) {
     Member member = this.memberGoal.getMember();
     member.validateId(memberId);
-  }
-
-  public int compareWithId(Long questId) {
-    if (this.questId.equals(questId)) {
-      return 0;
-    }
-
-    if (this.questId > questId) {
-      return 1;
-    }
-
-    return -1;
   }
 
   public void update(String title, Boolean isComplete, LocalDate deadline) {
@@ -81,13 +78,5 @@ public class Quest extends BaseTimeEntity {
     if (deadline != null && !deadline.equals(this.deadline)) {
       this.deadline = deadline;
     }
-  }
-
-  public static Quest copyQuest(String title, MemberGoal memberGoal) {
-    Quest quest = new Quest();
-    quest.title = title;
-    quest.memberGoal = memberGoal;
-
-    return quest;
   }
 }
