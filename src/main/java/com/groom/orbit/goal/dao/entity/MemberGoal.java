@@ -68,10 +68,12 @@ public class MemberGoal extends BaseTimeEntity {
   @OneToMany(mappedBy = "memberGoal", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Quest> quests = new ArrayList<>();
 
-  public static MemberGoal create(Member member, Goal goal) {
+  public static MemberGoal create(Member member, Goal goal, int memberGoalSize) {
     MemberGoal memberGoal = new MemberGoal();
     memberGoal.member = member;
     memberGoal.goal = goal;
+    memberGoal.sequence = memberGoalSize + 1;
+    goal.increaseCount();
 
     return memberGoal;
   }
