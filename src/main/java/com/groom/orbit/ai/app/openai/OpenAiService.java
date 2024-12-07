@@ -16,6 +16,7 @@ import com.groom.orbit.ai.app.AiService;
 import com.groom.orbit.ai.app.VectorService;
 import com.groom.orbit.ai.dao.vector.Vector;
 import com.groom.orbit.goal.app.dto.response.RecommendGoalListResponseDto;
+import com.groom.orbit.goal.dao.entity.MemberGoal;
 import com.groom.orbit.member.app.dto.response.GetFeedbackResponseDto;
 import com.groom.orbit.quest.app.dto.response.RecommendQuestListResponseDto;
 import com.groom.orbit.resume.app.dto.GetResumeResponseDto;
@@ -94,7 +95,7 @@ public class OpenAiService implements AiService {
   }
 
   @Override
-  public RecommendQuestListResponseDto recommendQuest(Long memberId) {
+  public RecommendQuestListResponseDto recommendQuest(Long memberId, MemberGoal memberGoal) {
     BeanOutputConverter<RecommendQuestListResponseDto> converter =
         getConverter(RecommendQuestListResponseDto.class);
     String format = converter.getFormat();
@@ -111,7 +112,7 @@ public class OpenAiService implements AiService {
                 "job",
                 convertListToString(myVector.interestJobs()),
                 "goal",
-                String.join(PARAMETER_LIST_DELIMITER, myVector.goals()),
+                memberGoal.getGoal().getTitle(),
                 "myQuest",
                 convertListToString(myVector.quests()),
                 "questList",
@@ -119,6 +120,7 @@ public class OpenAiService implements AiService {
                     othersVector.stream().flatMap(vector -> vector.goals().stream()).toList()),
                 "format",
                 format));
+    log.info(response);
     return converter.convert(response);
   }
 
