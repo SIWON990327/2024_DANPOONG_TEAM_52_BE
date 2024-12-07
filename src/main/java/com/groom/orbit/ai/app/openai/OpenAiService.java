@@ -2,6 +2,8 @@ package com.groom.orbit.ai.app.openai;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -88,7 +90,13 @@ public class OpenAiService implements AiService {
                 "goalList",
                 String.join(
                     PARAMETER_LIST_DELIMITER,
-                    othersVector.stream().flatMap(vector -> vector.goals().stream()).toList()),
+                    othersVector.stream()
+                        .filter(Objects::nonNull)
+                        .flatMap(
+                            vector ->
+                                vector.goals() != null ? vector.goals().stream() : Stream.empty())
+                        .filter(Objects::nonNull)
+                        .toList()),
                 "format",
                 format));
     return converter.convert(response);
