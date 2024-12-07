@@ -69,8 +69,8 @@ public class PineconeService implements VectorService {
                         dto.memberId(),
                         dto.memberName(),
                         dto.interestJobs(),
-                        dto.goal(),
-                        dto.quest()));
+                        dto.goals(),
+                        dto.quests()));
 
     saveVector(vector, dto.memberId());
   }
@@ -180,15 +180,18 @@ public class PineconeService implements VectorService {
             dto.interestJobs() != null && !dto.interestJobs().isEmpty()
                 ? dto.interestJobs()
                 : existingVector.interestJobs())
-        .goals(addUniqueValue(existingVector.goals(), dto.goal()))
-        .quests(addUniqueValue(existingVector.quests(), dto.quest()))
+        .goals(addUniqueValue(existingVector.goals(), dto.goals()))
+        .quests(addUniqueValue(existingVector.quests(), dto.quests()))
         .build();
   }
 
-  private List<String> addUniqueValue(List<String> existingList, String newValue) {
-    if (newValue != null && !existingList.contains(newValue)) {
-      existingList.add(newValue);
-    }
+  private List<String> addUniqueValue(List<String> existingList, List<String> newValues) {
+    newValues.forEach(
+        newValue -> {
+          if (newValue != null && !existingList.contains(newValue)) {
+            existingList.add(newValue);
+          }
+        });
     return existingList;
   }
 

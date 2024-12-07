@@ -61,7 +61,7 @@ public class QuestQueryService {
     Set<Quest> myQuests = new HashSet<>(memberGoal.getQuests());
 
     List<MemberGoal> memberGoals =
-        memberGoalService.findMemberGoalsByGoalId(memberGoal.getGoal().getGoalId()); // goal 조회
+        memberGoalService.findMemberGoalsByGoalId(memberGoal.getGoal().getGoalId()); // goals 조회
     Set<Quest> quests =
         memberGoals.stream()
             .map(MemberGoal::getQuests)

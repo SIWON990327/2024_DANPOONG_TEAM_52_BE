@@ -1,5 +1,7 @@
 package com.groom.orbit.quest.app;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +63,7 @@ public class QuestCommandService {
 
   private void saveVector(Long memberId, CreateQuestRequestDto dto) {
     CreateVectorDto vectorDto =
-        CreateVectorDto.builder().memberId(memberId).quest(dto.title()).build();
+        CreateVectorDto.builder().memberId(memberId).quests(List.of(dto.title())).build();
     vectorService.save(vectorDto);
   }
 

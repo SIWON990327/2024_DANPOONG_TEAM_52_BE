@@ -111,7 +111,7 @@ public class OpenAiService implements AiService {
             Map.of(
                 "job",
                 convertListToString(myVector.interestJobs()),
-                "goal",
+                "goals",
                 memberGoal.getGoal().getTitle(),
                 "myQuest",
                 convertListToString(myVector.quests()),

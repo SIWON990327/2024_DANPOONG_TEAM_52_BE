@@ -85,9 +85,15 @@ public class MemberGoalService {
     int memberGoalSize = memberGoalRepository.findAllByMemberIdAndIsCompleteFalse(memberId).size();
 
     MemberGoal memberGoal = MemberGoal.create(member, goal, memberGoalSize);
-    dto.quests().forEach(quest -> Quest.copyQuest(quest.title(), memberGoal));
+    List<String> goalTitles = List.of(memberGoal.getTitle());
+    List<String> questTitles =
+        dto.quests().stream()
+            .map(quest -> Quest.copyQuest(quest.title(), memberGoal))
+            .map(Quest::getTitle)
+            .toList();
+
     MemberGoal savedMemberGoal = memberGoalRepository.save(memberGoal);
-    saveVector(memberId, goal);
+    saveVector(memberId, goalTitles, questTitles);
 
     List<GetQuestResponseDto> questDtos =
         savedMemberGoal.getQuests().stream()
@@ -112,9 +118,9 @@ public class MemberGoalService {
         questDtos);
   }
 
-  private void saveVector(Long memberId, Goal goal) {
+  private void saveVector(Long memberId, List<String> goalTitles, List<String> questTitles) {
     CreateVectorDto vectorDto =
-        CreateVectorDto.builder().memberId(memberId).goal(goal.getTitle()).build();
+        CreateVectorDto.builder().memberId(memberId).goals(goalTitles).quests(questTitles).build();
     vectorService.save(vectorDto);
   }
 
@@ -122,10 +128,10 @@ public class MemberGoalService {
       Long memberId, Long memberGoalId, MemberGoalRequestDto dto) {
     MemberGoal memberGoal = findMemberGoal(memberGoalId);
     Goal goal = findGoal(dto.title(), dto.category());
-
     memberGoal.validateMember(memberId);
+
     updateVector(memberId, dto, memberGoal);
-    memberGoal.updateGoal(goal);
+    memberGoal.update(goal);
 
     return new CommonSuccessDto(true);
   }
@@ -134,6 +140,7 @@ public class MemberGoalService {
     if (dto.title() == null) {
       return;
     }
+
     UpdateVectorGoalDto updateDto =
         UpdateVectorGoalDto.builder()
             .memberId(memberId)
