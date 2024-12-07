@@ -125,7 +125,13 @@ public class OpenAiService implements AiService {
                 convertListToString(myVector.quests()),
                 "questList",
                 convertListToString(
-                    othersVector.stream().flatMap(vector -> vector.goals().stream()).toList()),
+                    othersVector.stream()
+                        .filter(Objects::nonNull)
+                        .flatMap(
+                            vector ->
+                                vector.goals() != null ? vector.goals().stream() : Stream.empty())
+                        .filter(Objects::nonNull)
+                        .toList()),
                 "format",
                 format));
     log.info(response);
