@@ -5,3 +5,5 @@
 ![18](https://github.com/user-attachments/assets/47b5edb4-d4f9-45a0-9a92-5ddd9deb6138)
 ![19](https://github.com/user-attachments/assets/b42e236f-235c-49a0-9000-b5b8d31e84aa)
 ![20](https://github.com/user-attachments/assets/8206e6ba-f7b7-4a1f-9f41-dcbecb0383b8)
+
+시연영상 : https://www.youtube.com/watch?v=qZAWoy5omIs
